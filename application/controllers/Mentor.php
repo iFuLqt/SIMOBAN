@@ -12,12 +12,8 @@ class Mentor extends CI_Controller {
     public function index() {
         $data['title'] = 'Beranda';
         $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
-        $email_user = $this->session->userdata('email_user');
-        $user = $this->db->get_where('user', ['email_user' => $email_user])->row_array();
         $jumlah_orang_absen = $this->mentor_model->cek_absen_hari_ini();
         $jumlah_orang_aktivitas = $this->mentor_model->cek_aktivitas_hari_ini();
-        
-        
 
         $jumlah_orang_absen = count($jumlah_orang_absen);
         $jumlah_orang_aktivitas = count($jumlah_orang_aktivitas);
@@ -29,42 +25,34 @@ class Mentor extends CI_Controller {
         if ($jumlah_orang_aktivitas > 1) {
             $jumlah_orang_aktivitas + 1;
         }
-        
-        if($user) {
-            $id_jurusan = $user['id_jurusan'];
-            $data['jumlah_orang_absen'] = $jumlah_orang_absen;
-            $data['jumlah_orang_aktivitas'] = $jumlah_orang_aktivitas;
-            $jumlah_idrole_3 = count($this->mentor_model->get_role_and_jurusan($id_jurusan));
-            $data['jumlah_idrole_3'] = $jumlah_idrole_3;
-            if ($jumlah_idrole_3 > 1) {
-                $jumlah_idrole_3 + 1;
-            }
-            $this->load->view('templates/header', $data);
-            $this->load->view('templates/sidebar', $data);
-            $this->load->view('templates/topbar', $data);
-            $this->load->view('mentor/index', $data);
-            $this->load->view('templates/footer');
+        $id_jurusan = $data['user']['id_jurusan'];
+        $data['jumlah_orang_absen'] = $jumlah_orang_absen;
+        $data['jumlah_orang_aktivitas'] = $jumlah_orang_aktivitas;
+        $jumlah_idrole_3 = count($this->mentor_model->get_role_and_jurusan($id_jurusan));
+        $data['jumlah_idrole_3'] = $jumlah_idrole_3;
+        if ($jumlah_idrole_3 > 1) {
+            $jumlah_idrole_3 + 1;
         }
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/sidebar', $data);
+        $this->load->view('templates/topbar', $data);
+        $this->load->view('mentor/index', $data);
+        $this->load->view('templates/footer');
+        
         
     }
 
     public function DataStudent(){
         $data['title'] = 'Data Siswa';
         $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array(); 
-        $email_user = $this->session->userdata('email_user');
-        $user = $this->db->get_where('user', ['email_user' => $email_user])->row_array();
-
-        if($user) {
-            $id_jurusan = $user['id_jurusan'];
-            $data['users'] = $this->mentor_model->get_student_by_jurusan($id_jurusan);
+        $id_jurusan = $data['user']['id_jurusan'];
+        $data['users'] = $this->mentor_model->get_student_by_jurusan($id_jurusan);
             
-            $this->load->view('templates/header', $data);
-            $this->load->view('templates/sidebar', $data);
-            $this->load->view('templates/topbar', $data);
-            $this->load->view('mentor/datastudent', $data);
-            $this->load->view('templates/footer');
-        }
-
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/sidebar', $data);
+        $this->load->view('templates/topbar', $data);
+        $this->load->view('mentor/datastudent', $data);
+        $this->load->view('templates/footer');
     }
 
     public function update_modal_datastudent() {
@@ -92,18 +80,14 @@ class Mentor extends CI_Controller {
     public function DataActivities(){
         $data['title'] = 'Data Kegiatan';
         $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
-        $email_user = $this->session->userdata('email_user');
-        $user = $this->db->get_where('user', ['email_user' => $email_user])->row_array();
-
-        if($user) {
-            $id_jurusan = $user['id_jurusan'];
-            $data['daily'] = $this->mentor_model->get_activities_by_jurusan($id_jurusan);
-            $this->load->view('templates/header', $data);
-            $this->load->view('templates/sidebar', $data);
-            $this->load->view('templates/topbar', $data);
-            $this->load->view('mentor/dataactivities', $data);
-            $this->load->view('templates/footer');
-        }
+        $id_jurusan = $data['user']['id_jurusan'];
+        $data['daily'] = $this->mentor_model->get_activities_by_jurusan($id_jurusan);
+        
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/sidebar', $data);
+        $this->load->view('templates/topbar', $data);
+        $this->load->view('mentor/dataactivities', $data);
+        $this->load->view('templates/footer');
     }
 
     public function update_modal_dataactivities() {
@@ -134,19 +118,16 @@ class Mentor extends CI_Controller {
     public function DataAbsensi(){
         $data['title'] = 'Data Absensi';
         $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
-        $email_user = $this->session->userdata('email_user');
-        $user = $this->db->get_where('user', ['email_user' => $email_user])->row_array();
+        $id_jurusan = $data['user']['id_jurusan'];
+        $data['absensi'] = $this->mentor_model->get_absensi_by_jurusan($id_jurusan);
+        $data['value'] = $this->db->get('value_absensi')->result_array();
 
-        if($user) {
-            $id_jurusan = $user['id_jurusan'];
-            $data['absensi'] = $this->mentor_model->get_absensi_by_jurusan($id_jurusan);
-            $data['value'] = $this->db->get('value_absensi')->result_array();
-            $this->load->view('templates/header', $data);
-            $this->load->view('templates/sidebar', $data);
-            $this->load->view('templates/topbar', $data);
-            $this->load->view('mentor/dataabsensi', $data);
-            $this->load->view('templates/footer');
-        }
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/sidebar', $data);
+        $this->load->view('templates/topbar', $data);
+        $this->load->view('mentor/dataabsensi', $data);
+        $this->load->view('templates/footer');
+        
     }
 
     public function update_modal_dataabsensi() {
@@ -175,6 +156,7 @@ class Mentor extends CI_Controller {
         $data['title'] = 'Buat Akun';
         $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
         $data['jur'] = $this->mentor_model->get_jurusan();
+
         $this->load->view('templates/header', $data);
         $this->load->view('templates/sidebar', $data);
         $this->load->view('templates/topbar', $data);
