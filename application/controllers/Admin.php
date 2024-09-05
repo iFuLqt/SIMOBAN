@@ -227,7 +227,7 @@ class Admin extends CI_Controller {
         $data['title'] = 'Detail Siswa';
         $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
         $data['users'] = $this->db->get_where('user', ['id_user' => $id_user])->row_array();
-        if (!$data['users']) {
+        if ($data['users']['id_role'] != 3) {
             redirect('admin/datastudent');
         } else {
             $this->load->view('templates/header', $data);
@@ -249,6 +249,4 @@ class Admin extends CI_Controller {
         $this->load->view('admin/dailyabsensi', $data);
         $this->load->view('templates/footer');
     }
-
-
 }
