@@ -77,7 +77,7 @@
                             </tbody>
                         </table>
                     <?php else: ?>
-                        <p>Belum ada riwayat absensi.</p>
+                        <center><p class="h5 mt-1 mb-3" style="text-size">Belum ada riwayat Kegiatan.</p></center>
                     <?php endif; ?>
                     </div>
                     </div>

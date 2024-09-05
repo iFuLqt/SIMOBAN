@@ -221,19 +221,14 @@ class User extends CI_Controller {
     public function HistoryAbsensi(){
         $data['title'] = 'Riwayat Absensi';
         $data['user'] = $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
-        $email_user = $this->session->userdata('email_user');
-        $user = $this->db->get_where('user', ['email_user' => $email_user])->row_array();
-        if ($user) {
-            $user_id = $user['id_user'];
-            $data['absensi'] = $this->absen_model->get_absensi_by_user_id($user_id);
-            $this->load->view('templates/header', $data);
-            $this->load->view('templates/sidebar', $data);
-            $this->load->view('templates/topbar', $data);
-            $this->load->view('user/historyabsensi', $data);
-            $this->load->view('templates/footer');
-        } else {
-            show_error('User not found');
-        }
+        $user_id = $data['user']['id_user'];
+        $data['absensi'] = $this->absen_model->get_absensi_by_user_id($user_id);
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/sidebar', $data);
+        $this->load->view('templates/topbar', $data);
+        $this->load->view('user/historyabsensi', $data);
+        $this->load->view('templates/footer');
+        
     }
 
 
