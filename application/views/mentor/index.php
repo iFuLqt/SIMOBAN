@@ -34,7 +34,10 @@
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Aktivitas (Harian)</div>
+                                                <a href="">
+                                                    Aktivitas (Harian)
+                                                </a>
+                                            </div>
                                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $jumlah_orang_aktivitas; ?> / <?= $jumlah_idrole_3; ?></div>
                                         </div>
                                         <div class="col-auto">
