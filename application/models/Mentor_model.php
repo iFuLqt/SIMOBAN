@@ -87,6 +87,20 @@ Class Mentor_model extends CI_Model {
         $query = $this->db->get();
         return $query->result_array();
     }
+    public function get_all_daily_activities($id_jurusan) {
+        $start_of_day = strtotime("today midnight"); // Mendapatkan timestamp untuk awal hari ini 00:00
+        $end_of_day = strtotime("tomorrow midnight") - 1; // Mendapatkan timestamp untuk akhir hari ini 23:59 
+        
+        $this->db->select('daily_activities.*, user.name_user, user.school, user.is_active, user.id_user, user.id_jurusan'); // Seleksi kolom yang diinginkan
+        $this->db->from('daily_activities');
+        $this->db->where('date_job >=', $start_of_day);
+        $this->db->where('date_job <=', $end_of_day);
+        $this->db->where('id_jurusan', $id_jurusan);
+        $this->db->join('user', 'user.id_user = daily_activities.user_id'); // Lakukan join jika diperlukan
+        $this->db->order_by(' daily_activities.date_job', 'DESC');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
 
     
     

@@ -34,8 +34,8 @@
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                <a href="">
-                                                    Aktivitas (Harian)
+                                                <a href="<?= base_url('mentor/daily_activities'); ?>">
+                                                    Kegiatan (Harian)
                                                 </a>
                                             </div>
                                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $jumlah_orang_aktivitas; ?> / <?= $jumlah_idrole_3; ?> Siswa</div>

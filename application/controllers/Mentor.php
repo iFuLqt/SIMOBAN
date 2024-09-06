@@ -153,7 +153,7 @@ class Mentor extends CI_Controller {
     }
 
     public function CreateMagang(){
-        $data['title'] = 'Buat Akun';
+        $data['title'] = 'Buat Akun Magang';
         $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
         $data['jur'] = $this->mentor_model->get_jurusan();
 
@@ -174,13 +174,13 @@ class Mentor extends CI_Controller {
         
         if($this->form_validation->run() == false) {
             $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Maaf!!, Silahkan Isi Semua Data</div>');
-            redirect('admin/createmagang');
+            redirect('mentor/createmagang');
         } else {
             $data = [
                 'name_user' => htmlspecialchars($this->input->post('name', true)),
                 'email_user' => htmlspecialchars($this->input->post('email', true)),
                 'school' => htmlspecialchars($this->input->post('school', true)),
-                'id_jurusan' => $this->input->post('id_jurusan'),
+                'id_jurusan' => $this->input->post('id_jurusan', true),
                 'image'=> 'default.jpg',
                 'password' => password_hash($this->input->post('password1'), PASSWORD_DEFAULT),
                 'id_role' => 2,
@@ -218,6 +218,18 @@ class Mentor extends CI_Controller {
         $this->load->view('templates/sidebar', $data);
         $this->load->view('templates/topbar', $data);
         $this->load->view('mentor/dailyabsensi', $data);
+        $this->load->view('templates/footer');
+    }
+
+    public function daily_activities() {
+        $data['title'] = 'Kegiatan (Harian)';
+        $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
+        $id_jurusan = $data['user']['id_jurusan'];
+        $data['users'] = $this->mentor_model->get_all_daily_activities($id_jurusan);   
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/sidebar', $data);
+        $this->load->view('templates/topbar', $data);
+        $this->load->view('mentor/dailyactivities', $data);
         $this->load->view('templates/footer');
     }
 
