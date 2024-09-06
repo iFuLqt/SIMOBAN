@@ -5,7 +5,7 @@
                     <h1 class="h3 mb-4 text-gray-800"><?= $title; ?></h1>
 
                     <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-lg">
                             <?= form_error('menu', '<div class="alert alert-danger" role="alert">', '</div>'); ?>
                             <?= $this->session->flashdata('message'); ?>
 
@@ -13,9 +13,9 @@
                             <a href="" class="btn btn-primary mb-3" data-toggle="modal"
                             data-target="#newMenuModal">Add New Menu</a>
 
-                                <table class="table table-hover">
+                                <table class="table table-bordered table-hover table-striped" id="datatable" >
                                     <thead>
-                                        <tr>
+                                        <tr style="text-align: center;">
                                             <th scope="col">#</th>
                                             <th scope="col">Menu</th>
                                             <th scope="col">Action</th>
@@ -24,7 +24,7 @@
                                     <tbody>
                                         <?php $i = 1; ?>
                                         <?php foreach ($menu as $m) : ?>
-                                        <tr>
+                                        <tr style="text-align: center;">
                                             <th scope="row"><?= $i; ?></th>
                                             <td><?= $m['menu']; ?></td>
                                             <td>

@@ -173,6 +173,8 @@ class Mentor extends CI_Controller {
         $this->form_validation->set_rules('password2','Password','required|trim|min_length[3]|matches[password1]');
         
         if($this->form_validation->run() == false) {
+            $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Maaf!!, Silahkan Isi Semua Data</div>');
+            redirect('admin/createmagang');
         } else {
             $data = [
                 'name_user' => htmlspecialchars($this->input->post('name', true)),
@@ -195,7 +197,7 @@ class Mentor extends CI_Controller {
         $data['title'] = 'Detail Siswa';
         $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
         $data['users'] = $this->db->get_where('user', ['id_user' => $id_user])->row_array();
-        if (!$data['users']) {
+        if ($data['users']['id_role'] != 3) {
             redirect('mentor/datastudent');
         } else {
             $this->load->view('templates/header', $data);

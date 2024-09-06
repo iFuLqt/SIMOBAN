@@ -20,7 +20,7 @@
 
                                 <table class="table table-bordered table-hover table-striped" id="datatable">
                                     <thead>
-                                        <tr>
+                                        <tr style="text-align: center;">
                                             <th scope="col">#</th>
                                             <th scope="col">title</th>
                                             <th scope="col">Menu</th>
@@ -31,15 +31,24 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <?php 
+                                        $keaktifan = [
+                                            '1' => 'Aktif',
+                                            '0' => 'Nonaktif'
+                                        ];
+                                        ?>
                                         <?php $i = 1; ?>
                                         <?php foreach ($subMenu as $sm) : ?>
-                                        <tr>
+                                        <tr style="text-align: center;">
                                             <th scope="row"><?= $i; ?></th>
                                             <td><?= $sm['title']; ?></td>
                                             <td><?= $sm['menu']; ?></td>
                                             <td><?= $sm['url']; ?></td>
                                             <td><?= $sm['icon']; ?></td>
-                                            <td><?= $sm['is_active']; ?></td>
+                                            <?php
+                                            $aktif = $keaktifan[$sm['is_active']] 
+                                            ?>
+                                            <td><?= $aktif; ?></td>
                                             <td>
                                                 <a href="" class="badge badge-success"> edit </a>
                                                 <a href="" class="badge badge-danger"> delete </a>

@@ -19,7 +19,11 @@
 
     <!-- Custom styles for this template-->
     <link href="<?= base_url('assets/'); ?>css/sb-admin-2.min.css" rel="stylesheet">
-
+    <style>
+        body {
+            background-image: url('assets/img/background.jpeg');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
 </head>
-
-<body class="bg-gradient-primary"></body>

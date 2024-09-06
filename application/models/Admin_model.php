@@ -82,6 +82,12 @@ Class Admin_model extends CI_Model {
         return $query->result_array();
     }
 
+    public function get_jurusan() {
+        $this->db->select('*');
+        $this->db->from('jurusan');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
     
 
 }

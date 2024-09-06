@@ -21,15 +21,14 @@
                                         <?= form_error('school','<small class="text-danger pl-3">','</small>');?>
                                 </div>
                                 <div class="form-group">
-                                    <select name="active" id="active" class="form-control ml-2" style="width: 15rem;">
-                                        <option value="">Pilih Keaktifan</option>
-                                        <option value="1">
-                                            Aktif
+                                    <select name="id_jurusan" id="id_jurusan" class="form-control">
+                                        <option value="">Pilih Jurusan Magang</option>
+                                        <?php foreach( $jur as $j) : ?>
+                                        <option value="<?= $j['id']; ?>">
+                                            <?= $j['jurusan']; ?>
                                         </option>
-                                        <option value="0">
-                                            Nonaktif
-                                        </option>
-                                    </select>                               
+                                        <?php endforeach; ?>
+                                    </select>  
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-sm-6 mb-3 mb-sm-0">

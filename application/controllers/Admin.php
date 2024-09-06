@@ -10,7 +10,7 @@ class Admin extends CI_Controller {
     }
 
     public function index(){
-        $data['title'] = 'Dashboard';
+        $data['title'] = 'Beranda';
         $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
         $jumlah_orang_absen = $this->admin_model->cek_absen_hari_ini();
         $jumlah_orang_aktivitas = $this->admin_model->cek_aktivitas_hari_ini();
@@ -197,6 +197,7 @@ class Admin extends CI_Controller {
     public function CreateMagang(){
         $data['title'] = 'Buatkan Akun Magang';
         $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
+        $data['jur'] = $this->admin_model->get_jurusan();
         $this->load->view('templates/header', $data);
         $this->load->view('templates/sidebar', $data);
         $this->load->view('templates/topbar', $data);
@@ -208,15 +209,19 @@ class Admin extends CI_Controller {
         $this->form_validation->set_rules('name','Name','required|trim');
         $this->form_validation->set_rules('email','Email','required|trim|valid_email|is_unique[user.email_user]', ['is_unique' => 'This email has already registered!']);
         $this->form_validation->set_rules('school','School','required|trim');
+        $this->form_validation->set_rules('id_jurusan','required|trim');
         $this->form_validation->set_rules('password1','Password','required|trim|min_length[3]|matches[password2]',['matches' => 'Password dont match!', 'min_length' => 'Password too short!']);
         $this->form_validation->set_rules('password2','Password','required|trim|min_length[3]|matches[password1]');
         
         if($this->form_validation->run() == false) {
+            $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Maaf!!, Silahkan Isi Semua Data</div>');
+            redirect('admin/createmagang');
         } else {
             $data = [
                 'name_user' => htmlspecialchars($this->input->post('name', true)),
                 'email_user' => htmlspecialchars($this->input->post('email', true)),
                 'school' => htmlspecialchars($this->input->post('school', true)),
+                'id_jurusan' => $this->input->post('id_jurusan', true),
                 'image'=> 'default.jpg',
                 'password' => password_hash($this->input->post('password1'), PASSWORD_DEFAULT),
                 'id_role' => 3,
