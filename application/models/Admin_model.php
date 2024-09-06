@@ -61,6 +61,13 @@ Class Admin_model extends CI_Model {
         return $query->result_array();
     }
 
+    public function get_role_2() {
+        $this->db->where('id_role', 2);
+        $this->db->where('is_active', 1);
+        $query = $this->db->get('user');
+        return $query->result_array();
+    }
+
     public function get_all_daily_absensi() {
         $start_of_day = strtotime("today midnight"); // Mendapatkan timestamp untuk awal hari ini 00:00
         $end_of_day = strtotime("tomorrow midnight") - 1; // Mendapatkan timestamp untuk akhir hari ini 23:59 
@@ -74,6 +81,7 @@ Class Admin_model extends CI_Model {
         $query = $this->db->get();
         return $query->result_array();
     }
+
     
 
 }

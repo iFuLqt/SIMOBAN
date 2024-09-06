@@ -15,9 +15,11 @@ class Admin extends CI_Controller {
         $jumlah_orang_absen = $this->admin_model->cek_absen_hari_ini();
         $jumlah_orang_aktivitas = $this->admin_model->cek_aktivitas_hari_ini();
         $jumlah_idrole_3 = $this->admin_model->get_role_3();
+        $jumlah_idrole_2 = $this->admin_model->get_role_2();
 
         $jumlah_orang_absen = count($jumlah_orang_absen);
         $jumlah_idrole_3 = count($jumlah_idrole_3);
+        $jumlah_idrole_2 = count($jumlah_idrole_2);
         $jumlah_orang_aktivitas = count($jumlah_orang_aktivitas);
         
         // Tambahkan 1 jika jumlah item lebih dari 1
@@ -30,10 +32,14 @@ class Admin extends CI_Controller {
         if ($jumlah_idrole_3 > 1) {
             $jumlah_idrole_3 + 1;
         }
+        if ($jumlah_idrole_2 > 1) {
+            $jumlah_idrole_2 + 1;
+        }
         // Kirimkan data ke view
         $data['jumlah_orang_absen'] = $jumlah_orang_absen;
         $data['jumlah_orang_aktivitas'] = $jumlah_orang_aktivitas;
-        $data['jumlah_idrole_2'] = $jumlah_idrole_3;
+        $data['jumlah_idrole_3'] = $jumlah_idrole_3;
+        $data['jumlah_idrole_2'] = $jumlah_idrole_2;
         $this->load->view('templates/header', $data);
         $this->load->view('templates/sidebar', $data);
         $this->load->view('templates/topbar', $data);

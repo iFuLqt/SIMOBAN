@@ -1,6 +1,7 @@
               <!-- Begin Page Content -->
                 <div class="scroll">
                 <div class="container-fluid">
+                    <div class="row">
                     <!-- Page Heading -->
                     <h1 class="h5 mb-3 text-gray-800"><?= $title; ?></h1>
                     <div class="card container-fluid">
@@ -116,6 +117,7 @@
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
+                    </div>
                     </div>
                     </div>
                 </div>
