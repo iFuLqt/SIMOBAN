@@ -12,8 +12,9 @@ class Mentor extends CI_Controller {
     public function index() {
         $data['title'] = 'Beranda';
         $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
-        $jumlah_orang_absen = $this->mentor_model->cek_absen_hari_ini();
-        $jumlah_orang_aktivitas = $this->mentor_model->cek_aktivitas_hari_ini();
+        $id_jurusan = $data['user']['id_jurusan'];
+        $jumlah_orang_absen = $this->mentor_model->cek_absen_hari_ini($id_jurusan);
+        $jumlah_orang_aktivitas = $this->mentor_model->cek_aktivitas_hari_ini($id_jurusan);
 
         $jumlah_orang_absen = count($jumlah_orang_absen);
         $jumlah_orang_aktivitas = count($jumlah_orang_aktivitas);
@@ -183,7 +184,7 @@ class Mentor extends CI_Controller {
                 'id_jurusan' => $this->input->post('id_jurusan', true),
                 'image'=> 'default.jpg',
                 'password' => password_hash($this->input->post('password1'), PASSWORD_DEFAULT),
-                'id_role' => 2,
+                'id_role' => 3,
                 'is_active' => 1,
                 'date_created' => time()
             ];
@@ -231,6 +232,15 @@ class Mentor extends CI_Controller {
         $this->load->view('templates/topbar', $data);
         $this->load->view('mentor/dailyactivities', $data);
         $this->load->view('templates/footer');
+    }
+
+    public function delete_modal_dailyactivities() {
+        $id = $this->input->post('id');
+
+        $this->db->where('id', $id);
+        $this->db->delete('daily_activities');
+        $this->session->set_flashdata('message', '<div class="alert alert-danger mt-2" role="alert">Data Berhasil DiHapus</div>');
+        redirect('mentor/daily_activities');
     }
 
     

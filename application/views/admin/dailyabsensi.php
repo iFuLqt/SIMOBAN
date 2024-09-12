@@ -26,6 +26,13 @@
                                     '0' => 'Nonaktif'
                                 ];
                                 ?>
+                                <?php 
+                                $absen = [
+                                  '1' => 'Hadir',
+                                  '2' => 'Sakit',
+                                  '3' => 'Izin'
+                                ];
+                                 ?>
                                 <?php $i = 1; ?>
                                 <?php foreach ($users as $d): ?>
                                 <tr style="text-align: center;">
@@ -33,7 +40,10 @@
                                     <td><?= $d['name_user']; ?></td>
                                     <td><?= $d['school']; ?></td>
                                     <td><?= $d['time']; ?></td>
-                                    <td><?= $d['information']; ?></td>
+                                    <?php 
+                                    $inf = $absen[$d['information']];
+                                    ?>
+                                    <td><?= $inf; ?></td>
                                     <?php 
                                     $pengecek = $keaktifan[$d['is_active']];
                                     ?>

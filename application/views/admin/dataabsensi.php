@@ -47,6 +47,13 @@
                                     'December' => 'Desember'
                                 ];
                                 ?>
+                                <?php 
+                                $absen = [
+                                  '1' => 'Hadir',
+                                  '2' => 'Sakit',
+                                  '3' => 'Izin'
+                                ];
+                                ?>
                                 <?php foreach ($absensi as $item): ?>
                                 <tr style="text-align: center;">
                                     <th scope="row"><?= $i; ?></th>
@@ -68,7 +75,10 @@
 
                                     <td><?= $tanggal_lengkap ?></td>
                                     <td><?= $item['time'] ?></td>
-                                    <td><?= $item['information'] ?></td>
+                                    <?php 
+                                    $inf = $absen[$item['information']];
+                                    ?>
+                                    <td><?= $inf; ?></td>
                                     <td>
                                         <div class="d-flex">
                                             <!-- Button Update -->

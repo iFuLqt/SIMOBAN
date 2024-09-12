@@ -29,6 +29,20 @@
                                     <li class="list-group-item">Nama : <?= $users['name_user']; ?></li>
                                     <li class="list-group-item">Email : <?= $users['email_user']; ?></li>
                                     <li class="list-group-item">Sekolah : <?= $users['school']; ?></li>
+                                    <?php 
+                                    
+                                    $jur = [
+                                        '1' => 'Administrasi Bisnis',
+                                        '2' => 'Akuntansi',
+                                        '3' => 'Teknik Elektro',
+                                        '4' => 'Teknik Sipil',
+                                        '5' => 'Teknik Mesin'
+                                    ];
+
+                                    $jurusan = $jur[$users['id_jurusan']];
+
+                                    ?>
+                                    <li class="list-group-item">Magang : <?= $jurusan ?></li>
                                     <?php
                                     $hari_indonesia = [
                                         'Sunday' => 'Minggu',
@@ -67,7 +81,7 @@
                                     // Format tanggal dalam bahasa Indonesia
                                     $tanggal_lengkap = $hari . ', ' . date('d', $users['date_created']) . ' ' . $bulan . ' ' . date('Y', $users['date_created']);
                                     ?>
-                                    <li class="list-group-item">Tanggal Dibuat : <?= $tanggal_lengkap; ?></li>
+                                    <li class="list-group-item">Tanggal Akun Dibuat : <?= $tanggal_lengkap; ?></li>
                                 </ul>
                             </div>
                         </div>

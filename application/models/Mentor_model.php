@@ -44,23 +44,29 @@ Class Mentor_model extends CI_Model {
         return $query->result_array();
     }
 
-    public function cek_absen_hari_ini() {
+    public function cek_absen_hari_ini($id_jurusan) {
         $start_of_day = strtotime("today midnight"); // Mendapatkan timestamp untuk awal hari ini 00:00
         $end_of_day = strtotime("tomorrow midnight") - 1; // Mendapatkan timestamp untuk akhir hari ini 23:59 
-
+        $this->db->select('user_absensi.*, user.id_jurusan');
+        $this->db->from('user_absensi');
+        $this->db->join('user', 'user.id_user = user_absensi.user_id');
         $this->db->where('date_in >=', $start_of_day);
         $this->db->where('date_in <=', $end_of_day);
-        $query = $this->db->get('user_absensi');
+        $this->db->where('id_jurusan', $id_jurusan);
+        $query = $this->db->get();
 
         return $query->result_array();
     }
-    public function cek_aktivitas_hari_ini() {
+    public function cek_aktivitas_hari_ini($id_jurusan) {
         $start_of_day = strtotime("today midnight"); // Mendapatkan timestamp untuk awal hari ini 00:00
         $end_of_day = strtotime("tomorrow midnight") - 1; // Mendapatkan timestamp untuk akhir hari ini 23:59 
-
+        $this->db->select('daily_activities.*, user.id_jurusan');
+        $this->db->from('daily_activities');
+        $this->db->join('user', 'user.id_user = daily_activities.user_id');
         $this->db->where('date_job >=', $start_of_day);
         $this->db->where('date_job <=', $end_of_day);
-        $query = $this->db->get('daily_activities');
+        $this->db->where('id_jurusan', $id_jurusan);
+        $query = $this->db->get();
 
         return $query->result_array();
     }

@@ -95,6 +95,7 @@ class Admin extends CI_Controller {
         $data['title'] = 'Data Siswa';
         $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
         $data['users'] = $this->admin_model->get_all_data_student();
+        $data['jurusan'] = $this->admin_model->get_jurusan();
         $this->load->view('templates/header', $data);
         $this->load->view('templates/sidebar', $data);
         $this->load->view('templates/topbar', $data);
@@ -105,9 +106,11 @@ class Admin extends CI_Controller {
     public function update_modal_datastudent() {
         $id = $this->input->post('id');
         $active = $this->input->post('active');
+        $jurusan = $this->input->post('jurusan');
 
         $data = [
-            'is_active' => $active
+            'is_active' => $active,
+            'id_jurusan' => $jurusan
         ];
         $this->db->where('id_user', $id);
         $this->db->update('user', $data);
@@ -195,7 +198,7 @@ class Admin extends CI_Controller {
     }
 
     public function CreateMagang(){
-        $data['title'] = 'Buatkan Akun Magang';
+        $data['title'] = 'Buatkan Akun';
         $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
         $data['jur'] = $this->admin_model->get_jurusan();
         $this->load->view('templates/header', $data);

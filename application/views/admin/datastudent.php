@@ -61,14 +61,26 @@
                                                         <div class="modal-body">
                                                             <div class="form-group">
                                                                 <input type="hidden" name="id" value="<?= $d['id_user']; ?>">
-                                                                <select name="active" id="active" class="form-control ml-2" style="width: 15rem;">
-                                                                    <option value="">Pilih Keaktifan</option>
+                                                                <label for="active">Keaktifan</label>
+                                                                <select name="active" id="active" class="form-control">
+                                                                    <option value="<?= $d['is_active']; ?>">Pilih Keaktifan</option>
                                                                     <option value="1">
                                                                         Aktif
                                                                     </option>
                                                                     <option value="0">
                                                                         Nonaktif
                                                                     </option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="jurusan">Jurusan</label>
+                                                                <select name="jurusan" id="jurusan" class="form-control">
+                                                                    <option value="<?= $d['id_jurusan']; ?>">Pilih jurusan</option>
+                                                                    <?php foreach ($jurusan as $jur) :?>
+                                                                    <option value="<?= $jur['id']; ?>">
+                                                                        <?= $jur['jurusan']; ?>
+                                                                    </option>
+                                                                    <?php endforeach; ?>
                                                                 </select>
                                                             </div>
                                                         </div>

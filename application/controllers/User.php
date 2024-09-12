@@ -124,8 +124,8 @@ class User extends CI_Controller {
         $information = $this->input->post('information'); // Default information jika tidak diisi
     
         // Definisikan rentang waktu absensi
-        $start_time = '21:00:00';
-        $end_time = '23:00:00';
+        $start_time = '11:00:00';
+        $end_time = '13:00:00';
         // Periksa apakah waktu saat ini dalam rentang yang diizinkan
 
         // Array untuk hari yang ada 
@@ -234,7 +234,7 @@ class User extends CI_Controller {
 
     //FUNGSI UNTUK MENAMPILKAN DATA DARI DATABASE KE PAGE AKTIVITAS HARIAN
     public function DailyActivities(){
-        $data['title'] = 'Aktivitas Harian';
+        $data['title'] = 'Kegiatan Harian';
         $data['user'] = $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
         $this->load->model('activities_model');
         $email_user = $this->session->userdata('email_user');

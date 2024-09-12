@@ -87,9 +87,9 @@
                                                                   <span aria-hidden="true">&times;</span>
                                                               </button>
                                                           </div>
-                                                          <form action="<?= base_url('mentor/delete_modal_datastudent'); ?>" method="post">
+                                                          <form action="<?= base_url('mentor/delete_modal_dailyactivities'); ?>" method="post">
                                                               <div class="modal-body">
-                                                                  <input type="hidden" name="id" value="<?= $d['id_user']; ?>"> <!-- Pastikan ini terisi dengan ID yang benar -->
+                                                                  <input type="hidden" name="id" value="<?= $d['id']; ?>"> <!-- Pastikan ini terisi dengan ID yang benar -->
                                                                   <div class="form-group"> <!-- Mengganti <da> dengan <div> -->
                                                                       <h4>Apakah Anda Yakin Ingin Menghapus Data?</h4>
                                                                   </div>

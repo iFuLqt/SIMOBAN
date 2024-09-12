@@ -25,7 +25,7 @@
                                 </li>
                             </ul>
                         </div>
-                        <button type="submit" class="btn btn-success" style="margin-top: 15px;">Success</button>
+                        <button type="submit" class="btn btn-success" style="margin-top: 15px;">Absen</button>
                     </form>
                 </div>
                 <!-- /.container-fluid -->

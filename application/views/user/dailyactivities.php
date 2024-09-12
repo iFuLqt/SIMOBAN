@@ -8,8 +8,7 @@
                         <div class="row">
                             <div class="col">
                                 <a href="" class="btn btn-primary mt-3 mr-1" data-toggle="modal"
-                                    data-target="#newDailyActivitiesModal">Tambah Pekerjaan</a>
-                                <button class="btn btn-success mt-3" type="button" name="print">Cetak</button>
+                                    data-target="#newDailyActivitiesModal">Tambah Pekerjaan</a> 
                             </div>
                         </div>
                     <?php if (isset($daily) && !empty($daily)) : ?>
@@ -21,7 +20,7 @@
                                     <th>Nama Siswa</th>
                                     <th>Hari/Tanggal</th>
                                     <th>Jam</th>
-                                    <th>Pekerjaan</th>
+                                    <th>Pekerjaan</th>  
                                 </tr>
                             </thead>
                             <tbody>

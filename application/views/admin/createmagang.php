@@ -30,6 +30,13 @@
                                         <?php endforeach; ?>
                                     </select>  
                                 </div>
+                                <div class="form-group">
+                                    <select name="role_id" id="role_id" class="form-control">
+                                        <option value="">Pilih Role</option>
+                                        <option value="3">Siswa Magang</option>
+                                        <option value="2">Mentor</option>
+                                    </select>  
+                                </div>
                                 <div class="form-group row">
                                     <div class="col-sm-6 mb-3 mb-sm-0">
                                         <input type="password" class="form-control form-control-user"
