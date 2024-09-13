@@ -28,7 +28,10 @@
                                 </div>
                                     <li class="list-group-item">Nama : <?= $users['name_user']; ?></li>
                                     <li class="list-group-item">Email : <?= $users['email_user']; ?></li>
+                                    <li class="list-group-item">No. HP : <?= $users['no_hp']; ?></li>
                                     <li class="list-group-item">Sekolah : <?= $users['school']; ?></li>
+                                    <li class="list-group-item">Nama Pembimbing (Sekolah) : <?= $users['nama_pembimbing']; ?></li>
+                                    <li class="list-group-item">No. HP Pembimbing (Sekolah) : <?= $users['nohp_pembimbing']; ?></li>
                                     <?php
                                     $hari_indonesia = [
                                         'Sunday' => 'Minggu',
@@ -67,7 +70,7 @@
                                     // Format tanggal dalam bahasa Indonesia
                                     $tanggal_lengkap = $hari . ', ' . date('d', $users['date_created']) . ' ' . $bulan . ' ' . date('Y', $users['date_created']);
                                     ?>
-                                    <li class="list-group-item">Tanggal Dibuat : <?= $tanggal_lengkap; ?></li>
+                                    <li class="list-group-item">Tanggal Akun Dibuat : <?= $tanggal_lengkap; ?></li>
                                 </ul>
                             </div>
                         </div>

@@ -91,31 +91,6 @@ class Mentor extends CI_Controller {
         $this->load->view('templates/footer');
     }
 
-    public function update_modal_dataactivities() {
-        $id = $this->input->post('id');
-        $time = $this->input->post('time');
-        $job = $this->input->post('job');
-
-        $data = [
-            'time' => $time,
-            'job' => $job 
-        ];
-        $this->db->where('id', $id);
-        $this->db->update('daily_activities', $data);
-        $this->session->set_flashdata('message', '<div class="alert alert-success mt-2" role="alert">Data Berhasil DiUbah</div>');
-        redirect('mentor/dataactivities');
-    }
-
-    public function delete_modal_dataactivities() {
-        $id = $this->input->post('id');
-
-        $this->db->where('id', $id);
-        $this->db->delete('daily_activities');
-        $this->session->set_flashdata('message', '<div class="alert alert-danger mt-2" role="alert">Data Berhasil DiHapus</div>');
-        redirect('mentor/dataactivities');
-    }
-
-
     public function DataAbsensi(){
         $data['title'] = 'Data Absensi';
         $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
@@ -129,28 +104,6 @@ class Mentor extends CI_Controller {
         $this->load->view('mentor/dataabsensi', $data);
         $this->load->view('templates/footer');
         
-    }
-
-    public function update_modal_dataabsensi() {
-        $id = $this->input->post('id');
-        $information = $this->input->post('information');
-
-        $data = [
-            'information' => $information
-        ];
-        $this->db->where('id', $id);
-        $this->db->update('user_absensi', $data);
-        $this->session->set_flashdata('message', '<div class="alert alert-success mt-2" role="alert">Data Berhasil DiUbah</div>');
-        redirect('mentor/dataabsensi');
-    }       
-
-    public function delete_modal_dataabsensi() {
-        $id = $this->input->post('id');
-
-        $this->db->where('id', $id);
-        $this->db->delete('user_absensi');
-        $this->session->set_flashdata('message', '<div class="alert alert-danger mt-2" role="alert">Data Berhasil DiHapus</div>');
-        redirect('mentor/dataabsensi');
     }
 
     public function CreateMagang(){

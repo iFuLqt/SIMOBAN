@@ -8,7 +8,7 @@ class Activities_model extends CI_Model {
     }
 
     public function get_daily_activities_by_user_id($user_id) {
-        $this->db->select('user.name_user, daily_activities.date_job, daily_activities.time, daily_activities.job');
+        $this->db->select('user.name_user, daily_activities.*');
         $this->db->from('daily_activities');
         $this->db->join('user', 'user.id_user = daily_activities.user_id');
         $this->db->where('daily_activities.user_id', $user_id);

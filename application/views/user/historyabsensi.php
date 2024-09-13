@@ -15,39 +15,14 @@
                                     <th>Nama Siswa</th>
                                     <th>Sekolah</th>
                                     <th>Tanggal</th>
-                                    <th>Waktu</th>
+                                    <th>Masuk</th>
+                                    <th>Keluar</th>
                                     <th>Keterangan</th>
+                                    <th>Catatan</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php
-                                $hari_indonesia = [
-                                    'Sunday' => 'Minggu',
-                                    'Monday' => 'Senin',
-                                    'Tuesday' => 'Selasa',
-                                    'Wednesday' => 'Rabu',
-                                    'Thursday' => 'Kamis',
-                                    'Friday' => 'Jumat',
-                                    'Saturday' => 'Sabtu'
-                                ];
-
-                                $bulan_indonesia = [
-                                    'January' => 'Januari',
-                                    'February' => 'Februari',
-                                    'March' => 'Maret',
-                                    'April' => 'April',
-                                    'May' => 'Mei',
-                                    'June' => 'Juni',
-                                    'July' => 'Juli',
-                                    'August' => 'Agustus',
-                                    'September' => 'September',
-                                    'October' => 'Oktober',
-                                    'November' => 'November',
-                                    'December' => 'Desember'
-                                ];
-                                ?>
                                 <?php 
-                                
                                 $absen = [
                                   '1' => 'Hadir',
                                   '2' => 'Sakit',
@@ -59,24 +34,12 @@
                                     <th scope="row"><?= $i; ?></th>
                                     <td><?= $item['Nama_Siswa'] ?></td>
                                     <td><?= $item['Sekolah'] ?></td>
-                                    
-                                    <?php
-                                    // Mengambil hari dan bulan dari timestamp
-                                    $hari_inggris = date('l', $item['Tanggal']);
-                                    $bulan_inggris = date('F', $item['Tanggal']);
-                                    
-                                    // Mengubah ke dalam bahasa Indonesia
-                                    $hari = $hari_indonesia[$hari_inggris];
-                                    $bulan = $bulan_indonesia[$bulan_inggris];
-                                    
-                                    // Format tanggal dalam bahasa Indonesia
-                                    $tanggal_lengkap = $hari . ', ' . date('d', $item['Tanggal']) . ' ' . $bulan . ' ' . date('Y', $item['Tanggal']);
-                                    ?>
-
-                                    <td><?= $tanggal_lengkap ?></td>
+                                    <td><?= $item['Tanggal'] ?></td>
                                     <td><?= $item['Waktu'] ?></td>
+                                    <td><?= $item['Keluar'] ?></td>
                                     <?php $inf = $absen[$item['Keterangan']]; ?>
                                     <td><?= $inf ?></td>
+                                    <td><?= $item['Catatan']; ?></td>
                                 </tr>
                                 <?php $i++; ?>
                                 <?php endforeach; ?>

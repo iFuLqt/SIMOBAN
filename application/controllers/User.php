@@ -28,6 +28,10 @@ class User extends CI_Controller {
 
         $this->form_validation->set_rules('name', 'Nama', 'required|trim');
         $this->form_validation->set_rules('school', 'Sekolah', 'required|trim');
+        $this->form_validation->set_rules('gedung', 'Gedung', 'required|trim');
+        $this->form_validation->set_rules('nohp', 'No. HP', 'required|trim');
+        $this->form_validation->set_rules('namapembimbing', 'Nama Pembimbing', 'required|trim');
+        $this->form_validation->set_rules('nohppembimbing', 'No. HP Pembimbing', 'required|trim');  
         
         if($this->form_validation->run() == false) {
             $this->load->view('templates/header', $data);
@@ -36,9 +40,13 @@ class User extends CI_Controller {
             $this->load->view('user/edit', $data);
             $this->load->view('templates/footer', $data);
         } else {
-            $name = $this->input->post('name');
-            $email = $this->input->post('email');
-            $school = $this->input->post('school');
+            $name = htmlspecialchars($this->input->post('name')); 
+            $email = htmlspecialchars($this->input->post('email')); 
+            $school = htmlspecialchars($this->input->post('school'));
+            $gedung = htmlspecialchars($this->input->post('gedung'));
+            $nohp = htmlspecialchars($this->input->post('nohp'));
+            $namapembimbing = htmlspecialchars($this->input->post('namapembimbing'));
+            $nohppembimbing = htmlspecialchars($this->input->post('nohppembimbing'));
             
             //cek jika ada gambar yang di upload
             $upload_image = $_FILES['image']['name'];
@@ -64,6 +72,11 @@ class User extends CI_Controller {
 
             $this->db->set('name_user', $name);
             $this->db->set('school', $school);
+            $this->db->set('gedung', $gedung);
+            $this->db->set('no_hp', $nohp);
+            $this->db->set('nama_pembimbing', $namapembimbing);
+            $this->db->set('nohp_pembimbing', $nohppembimbing);
+
             $this->db->where('email_user', $email);
             $this->db->update('user');
 
@@ -110,113 +123,109 @@ class User extends CI_Controller {
         }
     }
 
+    public function absen_in() {
+        $data['user'] = $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
+        $user_id = $data['user']['id_user']; 
+        $current_date = date('Y-m-d'); 
+        $current_time = date('H:i:s'); 
+        $information = $this->input->post('information');
+
+        // Definisikan rentang waktu absensi
+        $start_time = '07:00:00';
+        $end_time = '08:00:00';
+
+        $sudah_absen= $this->absen_model->cek_absen_hari_ini($user_id);
+
+        if ($sudah_absen) {
+            $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert" style="width: 100%;">
+            Anda sudah melakukan absen pada hari ini, Silahkan menunggu absen pulang
+            </div>');
+            redirect('user/absensi');
+        } else {
+            if ($current_time < $start_time) {
+                $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert" style="width: 100%;">
+                Absen Masuk Hanya Bisa Dilakukan Pada Jam 07:00-08:00 WITA
+                </div>');
+                redirect('user/absensi');
+            } else if($current_time > $end_time) {
+                $data_insert = [
+                    'user_id' => $user_id,
+                    'date_in' => $current_date,
+                    'time' => $current_time,
+                    'information' => $information,
+                    'note' => 'Absen Terlambat'
+                ];
+                $this->absen_model->cek_in($data_insert);
+    
+                $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert" style="width: 100%;">
+                Absen Masuk Berhasil Dicatat!, Dengan Status Terlambat
+                </div>');
+                redirect('user/absensi');
+            } else {
+                // Simpan data absen masuk
+                $data_insert = [
+                    'user_id' => $user_id,
+                    'date_in' => $current_date,
+                    'time' => $current_time,
+                    'information' => $information,
+                    'note' => '-'
+                ];
+                $this->absen_model->cek_in($data_insert);
+    
+                $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert" style="width: 100%;">
+                Absen Masuk Berhasil Dicatat!
+                </div>');
+                redirect('user/absensi');
+            }
+        } 
+    }
+
+
+    public function absen_out() {
+        $data['user'] = $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
+        $user_id = $data['user']['id_user']; 
+        $current_time = date('H:i:s');
+
+        $start_time_out = '13:00:00';
+        $sudah_absen_pulang= $this->absen_model->cek_absen_keluar_hari_ini($user_id);
+        if($sudah_absen_pulang){
+            $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert" style="width: 100%;">
+            Anda Sudah Melakukan Absen Pulang Pada Hari Ini, Terima kasih.
+            </div>');
+            redirect('user/absensi');
+        } else {
+            if ($current_time < $start_time_out) {
+                $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert" style="width: 100%;">
+                Absen Pulang Hanya Bisa Dilakukan Pada Jam 16:00 WITA
+                </div>');
+                redirect('user/absensi');
+            } else {
+                $data_update = [
+                    'time_out' => $current_time
+                ];
+                $this->absen_model->cek_out($user_id, $data_update);
+                $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert" style="width: 100%;">
+                Absen Pulang Berhasil Dicatat!
+                </div>');
+                redirect('user/absensi');
+            }
+        }
+    }
+    
+
     // FOLDER MAGANG
     public function Absensi() {
         $data['title'] = 'Absensi';
         $data['user'] = $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
         $data['value'] = $this->db->get('value_absensi')->result_array();
-
-        
-        // Mendapatkan id_user dari database
-        $user_id = $data['user']['id_user']; // Mengambil nilai id_user dari array hasil query
-        $current_date = time(); //Mengambil tanggal secara realtime (sudah di set di construct)
-        $current_time = date('H:i'); // mengambil waktu secara realtime (Mengikuti zona waktu WITA)
-        $information = $this->input->post('information'); // Default information jika tidak diisi
-    
-        // Definisikan rentang waktu absensi
-        $start_time = '11:00:00';
-        $end_time = '13:00:00';
-        // Periksa apakah waktu saat ini dalam rentang yang diizinkan
-
-        // Array untuk hari yang ada 
-        // Mendapatkan hari ini dalam bahasa Inggris
-        $day = date('l');
-        $month = date('F');
-
-        // Array terjemahan dari bahasa Inggris ke Indonesia untuk hari
-        $hari = [
-            'Sunday' => 'Minggu',
-            'Monday' => 'Senin',
-            'Tuesday' => 'Selasa',
-            'Wednesday' => 'Rabu',
-            'Thursday' => 'Kamis',
-            'Friday' => 'Jumat',
-            'Saturday' => 'Sabtu'
-        ];
-
-        // Array terjemahan dari bahasa Inggris ke Indonesia untuk bulan
-        $bulan = [
-            'January' => 'Januari',
-            'February' => 'Februari',
-            'March' => 'Maret',
-            'April' => 'April',
-            'May' => 'Mei',
-            'June' => 'Juni',
-            'July' => 'Juli',
-            'August' => 'Agustus',
-            'September' => 'September',
-            'October' => 'Oktober',
-            'November' => 'November',
-            'December' => 'Desember'
-        ];
-
-        // Mengubah hari dan bulan dari bahasa Inggris ke bahasa Indonesia
-        $hari_ini = $hari[$day];
-        $bulan_ini = $bulan[$month];
-
-        // Format lengkap tanggal
-        $data['hari'] = $hari_ini . ', ' . date('d') . ' ' . $bulan_ini . ' ' . date('Y');
-        $sudah_absen = $this->absen_model->cek_absen_hari_ini($user_id);
-        // Validasi form
-        $this->form_validation->set_rules('information', 'Information', 'required|trim');
-        if ($this->form_validation->run() == false) {
-            // Menampilkan views
-            $this->load->view('templates/header', $data);
-            $this->load->view('templates/sidebar', $data);
-            $this->load->view('templates/topbar', $data);
-            $this->load->view('user/absensi', $data);
-            $this->load->view('templates/footer');
-        } else {
-            if ($current_time < $start_time || $current_time > $end_time) {
-                // Tampilkan pesan error jika di luar rentang waktu
-                $this->session->set_flashdata('message', 
-                '<div class="alert alert-danger p-2" role="alert" style="width: 40rem;">
-                Absen Hanya Jam 07:00-08:00 WITA 
-                </div>');
-                redirect('user/absensi');
-                return; // Hentikan eksekusi lebih lanjut
-            } else {
-                if ($sudah_absen) {
-                    $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert" style="width: 40rem;">
-                    Maaf, Anda Sudah Melakukan Absen Hari Ini
-                    </div>');
-                    redirect('user/absensi'); // Arahkan kembali ke riwayat absensi atau halaman lain
-                } else {
-                    // Data yang akan disimpan ke database
-                    $data_insert = [
-                        'user_id' => $user_id,  // Menggunakan nilai user_id yang benar
-                        'date_in' => $current_date, // Tanggal check-in
-                        'time' => $current_time, // Waktu check-in
-                        'information' => $information // Informasi tambahan
-                    ];
-        
-                    // Melakukan insert ke database
-                    $this->absen_model->cek_in($data_insert);
-            
-                    // Redirect setelah berhasil insert
-                    $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert" style="width: 40rem;">
-                    Absen Berhasil!!!
-                    </div>');
-                    redirect('user/absensi');
-                }
-            }
-        }
-            
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/sidebar', $data);
+        $this->load->view('templates/topbar', $data);
+        $this->load->view('user/absensi', $data);
+        $this->load->view('templates/footer');
     }
     
     
-    
-
     
     public function HistoryAbsensi(){
         $data['title'] = 'Riwayat Absensi';
@@ -228,7 +237,6 @@ class User extends CI_Controller {
         $this->load->view('templates/topbar', $data);
         $this->load->view('user/historyabsensi', $data);
         $this->load->view('templates/footer');
-        
     }
 
 
@@ -252,6 +260,30 @@ class User extends CI_Controller {
         }
     }
 
+    public function update_modal_dailyactivities() {
+        $id = $this->input->post('id');
+        $time = $this->input->post('time');
+        $job = $this->input->post('job');
+
+        $data = [
+            'time' => $time,
+            'job' => $job 
+        ];
+        $this->db->where('id', $id);
+        $this->db->update('daily_activities', $data);
+        $this->session->set_flashdata('message', '<div class="alert alert-success mt-2" role="alert">Data Berhasil DiUbah</div>');
+        redirect('user/dailyactivities');
+    }
+
+    public function delete_modal_dailyactivities() {
+        $id = $this->input->post('id');
+
+        $this->db->where('id', $id);
+        $this->db->delete('daily_activities');
+        $this->session->set_flashdata('message', '<div class="alert alert-danger mt-2" role="alert">Data Berhasil DiHapus</div>');
+        redirect('user/dailyactivities');
+    }
+
     //FUNGSI UNTUK MODAL DI PAGE AKTIVITAS HARIAN
     public function Modal_DailyActivities() {
         $data['user'] = $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
@@ -263,7 +295,7 @@ class User extends CI_Controller {
         } else {
             $data = [
                 'user_id' => $user_id,
-                'date_job' => time(),
+                'date_job' => date('Y-m-d'),
                 'time' => htmlspecialchars($this->input->post('time')),
                 'job' => htmlspecialchars($this->input->post('job'))
             ];

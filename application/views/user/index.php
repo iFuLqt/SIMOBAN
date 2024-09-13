@@ -16,20 +16,22 @@
                     </div>
                     <div class="row no-gutters">
                         <!-- Kolom untuk gambar dengan margin kanan 1 -->
-                        <div class="col-md-4 pr-1">
-                            <img src="<?= base_url('assets/img/profile/') . $user['image'];?>" class="img-fluid rounded-start" style="width: 100%; height: auto;">
+                        <div class="col-md-4 pr-3 mb-5">
+                            <img src="<?= base_url('assets/img/profile/') . $user['image'];?>" class="img-fluid rounded-center" style="width: 100%; height: auto;">
                         </div>
-
                         <!-- Kolom untuk kartu profil -->
                         <div class="col-md-8 pl-1">
-                            <div class="card m-0">
+                            <div class="card m-0 ">
                                 <div class="card-header">
                                     <h3>PROFIL</h3>
                                 </div>
                                 <ul class="list-group list-group-flush">
                                     <li class="list-group-item">Nama : <?= $user['name_user']; ?></li>
                                     <li class="list-group-item">Email : <?= $user['email_user']; ?></li>
+                                    <li class="list-group-item">No. HP : <?= $user['no_hp']; ?></li>
                                     <li class="list-group-item">Sekolah : <?= $user['school']; ?></li>
+                                    <li class="list-group-item">Nama Pembimbing (Sekolah) : <?= $user['nama_pembimbing']; ?></li>
+                                    <li class="list-group-item">No. HP Pembimbing (Sekolah) : <?= $user['nohp_pembimbing']; ?></li>
                                     <?php
                                     $hari_indonesia = [
                                         'Sunday' => 'Minggu',
