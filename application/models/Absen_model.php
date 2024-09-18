@@ -6,10 +6,9 @@ class Absen_model extends CI_Model {
         parent::__construct();
         $this->load->database();
     }
-    protected $table = 'user_absensi'; // Nama tabel Anda
     
     public function cek_in($data_insert) {
-        return $this->db->insert($this->table, $data_insert);
+        return $this->db->insert('user_absensi', $data_insert);
     }
 
     public function cek_out($user_id, $data_update) {
@@ -57,11 +56,12 @@ class Absen_model extends CI_Model {
 
     // Method untuk mengambil riwayat absensi berdasarkan user_id
     public function get_absensi_by_user_id($user_id) {
-        $this->db->select('user.name_user as Nama_Siswa, user.school as Sekolah, user_absensi.date_in as Tanggal, user_absensi.time as Waktu, user_absensi.information as Keterangan, user_absensi.time_out as Keluar, user_absensi.note as Catatan');
+        $this->db->select('user.name_user, user.school, user_absensi.date_in, user_absensi.time, user_absensi.information, user_absensi.time_out, user_absensi.note');
         $this->db->from('user_absensi');
         $this->db->join('user', 'user.id_user = user_absensi.user_id');
         $this->db->where('user_absensi.user_id', $user_id);
         $this->db->order_by('user_absensi.date_in', 'DESC');
+        
         $query = $this->db->get();
         return $query->result_array(); // Mengembalikan hasil sebagai array
     }
@@ -72,6 +72,19 @@ class Absen_model extends CI_Model {
         $this->db->from('user_absensi'); // Nama tabel 'attendance' di database
         $query = $this->db->get();
         return $query->result_array(); // Mengembalikan data sebagai array
+    }
+
+    public function get_data_by_date_range($user_id, $tanggal_awal, $tanggal_akhir){
+        $this->db->select('user.name_user, user.school, user_absensi.*');
+        $this->db->from('user_absensi');
+        $this->db->join('user', 'user.id_user = user_absensi.user_id');
+        $this->db->where('user_id', $user_id);
+        $this->db->where('date_in >=', $tanggal_awal);
+        $this->db->where('date_in <=', $tanggal_akhir);
+        $this->db->order_by('user_absensi.date_in', 'DESC');
+    
+        $query = $this->db->get(); // Sesuaikan nama tabel
+        return $query->result_array();
     }
     
 }

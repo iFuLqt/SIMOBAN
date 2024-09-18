@@ -75,7 +75,7 @@ class Mentor extends CI_Controller {
         $this->db->where('id_user', $id);
         $this->db->delete('user');
         $this->session->set_flashdata('message', '<div class="alert alert-danger mt-2" role="alert">Data Berhasil DiHapus</div>');
-        redirect('mentor/dataactivities');
+        redirect('mentor/datastudent');
     }
 
     public function DataActivities(){
@@ -123,6 +123,7 @@ class Mentor extends CI_Controller {
         $this->form_validation->set_rules('email','Email','required|trim|valid_email|is_unique[user.email_user]', ['is_unique' => 'This email has already registered!']);
         $this->form_validation->set_rules('school','School','required|trim');
         $this->form_validation->set_rules('id_jurusan', 'required|trim');
+        $this->form_validation->set_rules('gedu', 'Gedu', 'required|trim');
         $this->form_validation->set_rules('password1','Password','required|trim|min_length[3]|matches[password2]',['matches' => 'Password dont match!', 'min_length' => 'Password too short!']);
         $this->form_validation->set_rules('password2','Password','required|trim|min_length[3]|matches[password1]');
         
@@ -135,6 +136,7 @@ class Mentor extends CI_Controller {
                 'email_user' => htmlspecialchars($this->input->post('email', true)),
                 'school' => htmlspecialchars($this->input->post('school', true)),
                 'id_jurusan' => $this->input->post('id_jurusan', true),
+                'gedung' => htmlspecialchars($this->input->post('gedu', true)),
                 'image'=> 'default.jpg',
                 'password' => password_hash($this->input->post('password1'), PASSWORD_DEFAULT),
                 'id_role' => 3,
@@ -161,39 +163,6 @@ class Mentor extends CI_Controller {
             $this->load->view('templates/footer');
         }
         
-    }
-
-    public function daily_absensi() {
-        $data['title'] = 'Absensi (Harian)';
-        $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
-        $id_jurusan = $data['user']['id_jurusan'];
-        $data['users'] = $this->mentor_model->get_all_daily_absensi($id_jurusan);   
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/sidebar', $data);
-        $this->load->view('templates/topbar', $data);
-        $this->load->view('mentor/dailyabsensi', $data);
-        $this->load->view('templates/footer');
-    }
-
-    public function daily_activities() {
-        $data['title'] = 'Kegiatan (Harian)';
-        $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
-        $id_jurusan = $data['user']['id_jurusan'];
-        $data['users'] = $this->mentor_model->get_all_daily_activities($id_jurusan);   
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/sidebar', $data);
-        $this->load->view('templates/topbar', $data);
-        $this->load->view('mentor/dailyactivities', $data);
-        $this->load->view('templates/footer');
-    }
-
-    public function delete_modal_dailyactivities() {
-        $id = $this->input->post('id');
-
-        $this->db->where('id', $id);
-        $this->db->delete('daily_activities');
-        $this->session->set_flashdata('message', '<div class="alert alert-danger mt-2" role="alert">Data Berhasil DiHapus</div>');
-        redirect('mentor/daily_activities');
     }
 
     
