@@ -228,6 +228,9 @@
                 <label for="end_date" class="form-label">Sampai Tanggal:</label>
                 <input type="date" id="end_date" name="end_date" class="form-control">
             </div>
+            <div class="form-group">
+                <p>Tekan Saja Tombol Print Jika Ingin Mencetak Seluruh Data Kegiatan</p>
+            </div>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

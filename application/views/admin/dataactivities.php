@@ -14,7 +14,6 @@
                                     <th>Nama Siswa</th>
                                     <th>Hari/Tanggal</th>
                                     <th>Masuk</th>
-                                    <th>Pulang</th>
                                     <th>Pekerjaan</th>
                                 </tr>
                             </thead>
@@ -24,9 +23,8 @@
                                 <tr style="text-align: center;">
                                     <th scope="row"><?= $i; ?></th>
                                     <td><?= $d['name_user']; ?></td>
-                                    <td><?= $d['date_in']; ?></td>
+                                    <td><?= $d['date_job']; ?></td>
                                     <td><?= $d['time']; ?></td>
-                                    <td><?= $d['time_out']; ?></td>
                                     <td><?= $d['job']; ?></td>
                                 </tr>
                                 <?php $i++; ?>

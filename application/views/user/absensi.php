@@ -10,7 +10,7 @@
                     ?>
                     <h2>Maap Hari Ini Hari Libur Anda Tidak Bisa Absen</h2>
                     <?php else : ?>
-                        <?php if(date('H:i:s') < '13:00:00') :?>
+                        <?php if(date('H:i:s') < '15:59:59') :?>
                         <form action="<?= base_url('user/absen_in') ?>" method="post">
                             <div class="card" >
                                 <div class="card-header">
@@ -34,7 +34,7 @@
                             </div>
                             <button type="submit" class="btn btn-success" style="margin-top: 15px;">Absen</button>
                         </form>
-                        <?php elseif(date('H:i:s') > '14:00:00') :?>
+                        <?php elseif(date('H:i:s') > '16:00:00') :?>
                         <form action="<?= base_url('user/absen_out') ?>" method="post">
                             <div class="card" >
                                 <div class="card-header">

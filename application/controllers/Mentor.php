@@ -13,22 +13,34 @@ class Mentor extends CI_Controller {
         $data['title'] = 'Beranda';
         $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
         $id_jurusan = $data['user']['id_jurusan'];
-        $jumlah_orang_absen = $this->mentor_model->cek_absen_hari_ini($id_jurusan);
-        $jumlah_orang_aktivitas = $this->mentor_model->cek_aktivitas_hari_ini($id_jurusan);
+        $jumlah_orang_hadir = $this->mentor_model->cek_hadir_hari_ini($id_jurusan);
+        $jumlah_orang_sakit = $this->mentor_model->cek_sakit_hari_ini($id_jurusan);
+        $jumlah_orang_izin = $this->mentor_model->cek_izin_hari_ini($id_jurusan);
+        $jumlah_orang_terlambat = $this->mentor_model->cek_terlambat_hari_ini($id_jurusan);
 
-        $jumlah_orang_absen = count($jumlah_orang_absen);
-        $jumlah_orang_aktivitas = count($jumlah_orang_aktivitas);
+        $jumlah_hadir = count($jumlah_orang_hadir);
+        $jumlah_sakit = count($jumlah_orang_sakit);
+        $jumlah_izin = count($jumlah_orang_izin);
+        $jumlah_terlambat = count($jumlah_orang_terlambat);
         
         // Tambahkan 1 jika jumlah item lebih dari 1
-        if ($jumlah_orang_absen > 1) {
-            $jumlah_orang_absen + 1;
+        if ($jumlah_hadir > 1) {
+            $jumlah_hadir + 1;
         }
-        if ($jumlah_orang_aktivitas > 1) {
-            $jumlah_orang_aktivitas + 1;
+        if ($jumlah_sakit > 1) {
+            $jumlah_sakit + 1;
         }
-        $id_jurusan = $data['user']['id_jurusan'];
-        $data['jumlah_orang_absen'] = $jumlah_orang_absen;
-        $data['jumlah_orang_aktivitas'] = $jumlah_orang_aktivitas;
+        if ($jumlah_izin > 1) {
+            $jumlah_izin + 1;
+        }
+        if ($jumlah_terlambat > 1) {
+            $jumlah_terlambat + 1;
+        }
+        
+        $data['hadir'] = $jumlah_hadir;
+        $data['sakit'] = $jumlah_sakit;
+        $data['izin'] = $jumlah_izin;
+        $data['terlambat'] = $jumlah_terlambat;
         $jumlah_idrole_3 = count($this->mentor_model->get_role_and_jurusan($id_jurusan));
         $data['jumlah_idrole_3'] = $jumlah_idrole_3;
         if ($jumlah_idrole_3 > 1) {
@@ -74,16 +86,89 @@ class Mentor extends CI_Controller {
 
         $this->db->where('id_user', $id);
         $this->db->delete('user');
+        $this->db->where('user_id', $id);
+        $this->db->delete('daily_activities');
+        $this->db->where('user_id', $id);
+        $this->db->delete('user_absensi');
         $this->session->set_flashdata('message', '<div class="alert alert-danger mt-2" role="alert">Data Berhasil DiHapus</div>');
         redirect('mentor/datastudent');
+    }
+
+    public function DataAbsensi(){
+        $data['title'] = 'Data Absensi';
+        $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
+        $id_jurusan = $data['user']['id_jurusan'];
+        $data['student'] = $this->mentor_model->get_student_by_jurusan($id_jurusan);
+
+        $tanggal_awal = $this->input->post('start_date');
+        $tanggal_akhir = $this->input->post('end_date') ;
+        if (!empty($tanggal_awal) && !empty($tanggal_akhir)) {
+            $data['absensi'] = $this->mentor_model->get_all_absensi_by_date_range($tanggal_awal, $tanggal_akhir);
+        } else {
+            $data['absensi'] = $this->mentor_model->get_absensi_by_jurusan($id_jurusan);
+        }
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/sidebar', $data);
+        $this->load->view('templates/topbar', $data);
+        $this->load->view('mentor/dataabsensi', $data);
+        $this->load->view('templates/footer');
+    }
+
+    public function print_DataAbsensi(){
+        // Ambil data user yang sedang login
+        $data['user'] = $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
+    
+        // Ambil input dari form
+        $user_id = $this->input->post('nama');
+        $tanggal_awal = $this->input->post('start_date');
+        $tanggal_akhir = $this->input->post('end_date');
+    
+        // Cek jika user_id tidak kosong
+        if ($user_id != 0) {
+            // Jika tanggal awal dan akhir tidak diisi, ambil semua data absensi berdasarkan user_id
+            if (empty($tanggal_awal) && empty($tanggal_akhir)) {
+                $data['print'] = $this->mentor_model->get_all_absensi_by_userid($user_id);
+            } 
+            // Jika tanggal awal dan akhir diisi, ambil data absensi berdasarkan rentang tanggal
+            else {
+                $data['print'] = $this->mentor_model->get_absensi_by_date_range($user_id, $tanggal_awal, $tanggal_akhir);
+            }
+    
+            // Jika tidak ada data yang ditemukan, redirect kembali ke halaman awal dengan alert
+            if (empty($data['print'])) {
+                $this->session->set_flashdata('message', '<div class="alert alert-danger mt-2" role="alert">Data Absensi Kosong.</div>');
+                redirect('mentor/dataabsensi'); // Ganti dengan halaman yang sesuai
+            }
+    
+        } else {
+            // Jika user_id kosong, berikan pesan kesalahan
+            $this->session->set_flashdata('message', '<div class="alert alert-danger mt-2" role="alert">Nama Siswa Tidak Boleh Kosong.</div>');
+            redirect('mentor/dataabsensi'); // Redirect ke halaman yang sesuai
+        }
+    
+        // Jika ada data, tampilkan view untuk mencetak data absensi
+        $this->load->view('mentor/print_dataabsensi', $data);
+    }
+    
+    
+
+    public function refresh_dataabsensi() {
+        redirect('mentor/dataabsensi');
     }
 
     public function DataActivities(){
         $data['title'] = 'Data Kegiatan';
         $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
         $id_jurusan = $data['user']['id_jurusan'];
-        $data['daily'] = $this->mentor_model->get_activities_by_jurusan($id_jurusan);
-        
+        $data['student'] = $this->mentor_model->get_student_by_jurusan($id_jurusan);
+
+        $tanggal_awal = $this->input->post('start_date');
+        $tanggal_akhir = $this->input->post('end_date') ;
+        if (!empty($tanggal_awal) && !empty($tanggal_akhir)) {
+            $data['daily'] = $this->mentor_model->get_all_activities_by_date_range($tanggal_awal, $tanggal_akhir);
+        } else {
+            $data['daily'] = $this->mentor_model->get_activities_by_jurusan($id_jurusan);
+        }
         $this->load->view('templates/header', $data);
         $this->load->view('templates/sidebar', $data);
         $this->load->view('templates/topbar', $data);
@@ -91,19 +176,45 @@ class Mentor extends CI_Controller {
         $this->load->view('templates/footer');
     }
 
-    public function DataAbsensi(){
-        $data['title'] = 'Data Absensi';
-        $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
-        $id_jurusan = $data['user']['id_jurusan'];
-        $data['absensi'] = $this->mentor_model->get_absensi_by_jurusan($id_jurusan);
-        $data['value'] = $this->db->get('value_absensi')->result_array();
+    public function print_DataActivities(){
+        // Ambil data user yang sedang login
+        $data['user'] = $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
+    
+        // Ambil input dari form
+        $user_id = $this->input->post('nama');
+        $tanggal_awal = $this->input->post('start_date');
+        $tanggal_akhir = $this->input->post('end_date');
+    
+        // Cek jika user_id tidak kosong
+        if ($user_id != 0) {
+            // Jika tanggal awal dan akhir tidak diisi, ambil semua data absensi berdasarkan user_id
+            if (empty($tanggal_awal) && empty($tanggal_akhir)) {
+                $data['print'] = $this->mentor_model->get_all_activities_by_userid($user_id);
+            } 
+            // Jika tanggal awal dan akhir diisi, ambil data absensi berdasarkan rentang tanggal
+            else {
+                $data['print'] = $this->mentor_model->get_activities_by_date_range($user_id, $tanggal_awal, $tanggal_akhir);
+            }
+    
+            // Jika tidak ada data yang ditemukan, redirect kembali ke halaman awal dengan alert
+            if (empty($data['print'])) {
+                $this->session->set_flashdata('message', '<div class="alert alert-danger mt-2" role="alert">Data Kegiatan kosong.</div>');
+                redirect('mentor/dataactivities'); // Ganti dengan halaman yang sesuai
+            }
+    
+        } else {
+            // Jika user_id kosong, berikan pesan kesalahan
+            $this->session->set_flashdata('message', '<div class="alert alert-danger mt-2" role="alert">Nama Siswa tidak boleh kosong.</div>');
+            redirect('mentor/dataactivities'); // Redirect ke halaman yang sesuai
+        }
+    
+        // Jika ada data, tampilkan view untuk mencetak data absensi
+        $this->load->view('mentor/print_dataactivities', $data);
+    }
+    
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/sidebar', $data);
-        $this->load->view('templates/topbar', $data);
-        $this->load->view('mentor/dataabsensi', $data);
-        $this->load->view('templates/footer');
-        
+    public function refresh_dataactivities() {
+        redirect('mentor/dataactivities');
     }
 
     public function CreateMagang(){
@@ -153,7 +264,8 @@ class Mentor extends CI_Controller {
         $data['title'] = 'Detail Siswa';
         $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
         $data['users'] = $this->db->get_where('user', ['id_user' => $id_user])->row_array();
-        if ($data['users']['id_role'] != 3) {
+        $jurusan = $data['user']['id_jurusan'];
+        if (($data['users']['id_role'] != 3) || ($data['users']['id_jurusan'] != $jurusan)) {
             redirect('mentor/datastudent');
         } else {
             $this->load->view('templates/header', $data);

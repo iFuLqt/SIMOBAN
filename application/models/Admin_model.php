@@ -33,19 +33,51 @@ Class Admin_model extends CI_Model {
         return $query->result_array();
     }
 
-    public function cek_absen_hari_ini() {
+    public function cek_hadir_hari_ini() {
         $date = date('Y-m-d'); 
 
+        $this->db->select('user_absensi.information, user.id_jurusan');
+        $this->db->from('user_absensi');
+        $this->db->join('user', 'user.id_user = user_absensi.user_id');
+        $this->db->where('information', 1);
         $this->db->where('date_in', $date);
-        $query = $this->db->get('user_absensi');
+        $query = $this->db->get();
 
         return $query->result_array();
     }
-    public function cek_aktivitas_hari_ini() {
+    public function cek_sakit_hari_ini() {
         $date = date('Y-m-d'); 
 
+        $this->db->select('user_absensi.information, user.id_jurusan');
+        $this->db->from('user_absensi');
+        $this->db->join('user', 'user.id_user = user_absensi.user_id');
+        $this->db->where('information', 2);
         $this->db->where('date_in', $date);
-        $query = $this->db->get('daily_activities');
+        $query = $this->db->get();
+
+        return $query->result_array();
+    }
+    public function cek_izin_hari_ini() {
+        $date = date('Y-m-d'); 
+
+        $this->db->select('user_absensi.information, user.id_jurusan');
+        $this->db->from('user_absensi');
+        $this->db->join('user', 'user.id_user = user_absensi.user_id');
+        $this->db->where('information', 3);
+        $this->db->where('date_in', $date);
+        $query = $this->db->get();
+
+        return $query->result_array();
+    }
+    public function cek_terlambat_hari_ini() {
+        $date = date('Y-m-d'); 
+
+        $this->db->select('user_absensi.information, user.id_jurusan');
+        $this->db->from('user_absensi');
+        $this->db->join('user', 'user.id_user = user_absensi.user_id');
+        $this->db->where('note', 'Absen Terlambat');
+        $this->db->where('date_in', $date);
+        $query = $this->db->get();
 
         return $query->result_array();
     }

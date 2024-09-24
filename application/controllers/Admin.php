@@ -12,22 +12,33 @@ class Admin extends CI_Controller {
     public function index(){
         $data['title'] = 'Beranda';
         $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
-        $jumlah_orang_absen = $this->admin_model->cek_absen_hari_ini();
-        $jumlah_orang_aktivitas = $this->admin_model->cek_aktivitas_hari_ini();
+
+        $jumlah_orang_hadir = $this->admin_model->cek_hadir_hari_ini();
+        $jumlah_orang_sakit = $this->admin_model->cek_sakit_hari_ini();
+        $jumlah_orang_izin = $this->admin_model->cek_izin_hari_ini();
+        $jumlah_orang_terlambat = $this->admin_model->cek_terlambat_hari_ini();
         $jumlah_idrole_3 = $this->admin_model->get_role_3();
         $jumlah_idrole_2 = $this->admin_model->get_role_2();
 
-        $jumlah_orang_absen = count($jumlah_orang_absen);
+        $jumlah_hadir = count($jumlah_orang_hadir);
+        $jumlah_sakit = count($jumlah_orang_sakit);
+        $jumlah_izin = count($jumlah_orang_izin);
+        $jumlah_terlambat = count($jumlah_orang_terlambat);
         $jumlah_idrole_3 = count($jumlah_idrole_3);
         $jumlah_idrole_2 = count($jumlah_idrole_2);
-        $jumlah_orang_aktivitas = count($jumlah_orang_aktivitas);
         
         // Tambahkan 1 jika jumlah item lebih dari 1
-        if ($jumlah_orang_absen > 1) {
-            $jumlah_orang_absen + 1;
+        if ($jumlah_hadir > 1) {
+            $jumlah_hadir + 1;
         }
-        if ($jumlah_orang_aktivitas > 1) {
-            $jumlah_orang_aktivitas + 1;
+        if ($jumlah_sakit > 1) {
+            $jumlah_sakit + 1;
+        }
+        if ($jumlah_izin > 1) {
+            $jumlah_izin + 1;
+        }
+        if ($jumlah_terlambat > 1) {
+            $jumlah_terlambat + 1;
         }
         if ($jumlah_idrole_3 > 1) {
             $jumlah_idrole_3 + 1;
@@ -36,8 +47,10 @@ class Admin extends CI_Controller {
             $jumlah_idrole_2 + 1;
         }
         // Kirimkan data ke view
-        $data['jumlah_orang_absen'] = $jumlah_orang_absen;
-        $data['jumlah_orang_aktivitas'] = $jumlah_orang_aktivitas;
+        $data['hadir'] = $jumlah_hadir;
+        $data['sakit'] = $jumlah_sakit;
+        $data['izin'] = $jumlah_izin;
+        $data['terlambat'] = $jumlah_terlambat;
         $data['jumlah_idrole_3'] = $jumlah_idrole_3;
         $data['jumlah_idrole_2'] = $jumlah_idrole_2;
         $this->load->view('templates/header', $data);

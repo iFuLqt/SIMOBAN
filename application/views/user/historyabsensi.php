@@ -129,7 +129,7 @@
                 <input type="date" id="end_date" name="end_date" class="form-control">
             </div>
             <div class="form-group">
-                <h4>Tekan Saja Tombol Print Jika Ingin Mencetak Seluruh Data Absensi</h4>
+                <p>Tekan Saja Tombol Print Jika Ingin Mencetak Seluruh Data Absensi</p>
             </div>
         </div>
         <div class="modal-footer">
