@@ -170,12 +170,41 @@ Class Mentor_model extends CI_Model {
         $this->db->select('user_absensi.information, user.id_jurusan');
         $this->db->from('user_absensi');
         $this->db->join('user', 'user.id_user = user_absensi.user_id');
-        $this->db->where('note', 'Absen Terlambat');
+        $this->db->where('note', 'Terlambat');
         $this->db->where('date_in', $date);
         $this->db->where('id_jurusan', $id_jurusan);
         $query = $this->db->get();
 
         return $query->result_array();
+    }
+
+    public function get_teacher() {
+        $this->db->select('*');
+        $this->db->from('user');
+        $this->db->where('id_role', 4);
+
+        return $this->db->get()->result_array();
+    }
+
+    public function get_siswa_by_id_guru($id_guru) {
+        $this->db->select('*');
+        $this->db->from('user');
+        $this->db->join('user_teacher', 'user_teacher.user_id = user.id_user');
+        $this->db->where('user_teacher.teacher_id', $id_guru);
+        $this->db->where('user.is_active', 1);
+        $this->db->order_by('user.id_user', 'DESC');
+    
+        return $this->db->get()->result_array();
+    }
+    public function get_guru_by_id_siswa($id_user) {
+        $this->db->select('*');
+        $this->db->from('user');
+        $this->db->join('user_teacher', 'user_teacher.teacher_id = user.id_user');
+        $this->db->where('user_teacher.user_id', $id_user);
+        $this->db->where('user.is_active', 1);
+        $this->db->order_by('user.id_user', 'DESC');
+    
+        return $this->db->get()->result_array();
     }
     
 

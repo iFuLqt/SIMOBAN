@@ -4,7 +4,9 @@
                     <div class="row">
                     <!-- Page Heading -->
                     <h1 class="h5 mb-3 text-gray-800"><?= $title; ?></h1>
-                    <div class="card container-fluid p-4 mb-3">
+                    <?php $this->session->flashdata('message'); ?>
+                    <div class="card container-fluid">
+                    <div class="table-responsive mt-3">
                         <div class="row mb-3">
                             <!-- Tambah Pekerjaan dan Refresh dalam satu baris -->
                             <div class="col-12">
@@ -52,9 +54,7 @@
                                 </form>
                             </div>
                         </div>
-                    </div>
-                    <div class="card container-fluid">
-                    <div class="table-responsive mt-3"> 
+                    <hr>
                     <?php if (isset($absensi) && !empty($absensi)): ?>
                         <table class="table table-bordered table-hover table-striped" id="datatable">
                             <thead>
@@ -83,19 +83,22 @@
                                     <th scope="row"><?= $i; ?></th>
                                     <td><?= $item['name_user'] ?></td>
                                     <td><?= $item['school'] ?></td>
-                                    <td><?= $item['date_in'] ?></td>
+                                    <td><?= date("d-m-Y", strtotime($item['date_in'])); ?></td>
                                     <td><?= $item['time'] ?></td>
                                     <td><?= $item['time_out'] ?></td>
-                                    <?php $inf = $absen[$item['information']]; ?>
-                                    <td><?= $inf; ?></td>
-                                    <td><?= $item['note']; ?></td>
+                                    <td><?= $absen[$item['information']]; ?></td>
+                                    <?php if($item['note'] == "Terlambat") : ?>
+                                        <td><span style="background-color: red; color: white; padding: 2px 5px; border-radius: 10px"><b><?= $item['note']; ?></b></span></td>
+                                    <?php else : ?>
+                                        <td><span style="background-color: green; color: white; padding: 2px 5px; border-radius: 10px"><b><?= $item['note']; ?></b></span></td>
+                                    <?php endif; ?>
                                 </tr>
                                 <?php $i++; ?>
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
                     <?php else: ?>
-                        <center><p class="h5 mt-1 mb-3" style="text-size">Belum ada riwayat absensi.</p></center>
+                        <center><p class="h5 mt-1 mb-3">Belum ada riwayat absensi.</p></center>
                     <?php endif; ?>
                     </div>
                     </div>
@@ -128,8 +131,11 @@
                 <label for="end_date" class="form-label">Sampai Tanggal:</label>
                 <input type="date" id="end_date" name="end_date" class="form-control">
             </div>
-            <div class="form-group">
-                <p>Tekan Saja Tombol Print Jika Ingin Mencetak Seluruh Data Absensi</p>
+            <div class="form-check">
+                <input class="form-check" type="checkbox" value="1" id="flexCheckDefault" name="check">
+                <label class="form-check-label" for="flexCheckDefault">
+                    Semua Absensi
+                </label>
             </div>
         </div>
         <div class="modal-footer">

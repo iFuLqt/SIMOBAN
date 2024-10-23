@@ -9,9 +9,7 @@
                             <!-- Tambah Pekerjaan dan Refresh dalam satu baris -->
                             <div class="col-12">
                                 <div class="row g-3">
-                                <?php $dateWeek = date('N');
-                                if(!($dateWeek == 6) || !($dateWeek == 7)) :
-                                ?>
+                                    <?php if($absen) : ?>
                                     <div class="col-md-4">
                                         <div class="d-flex mb-2 mb-md-0">
                                             <div class="w-100">
@@ -21,7 +19,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                <?php endif; ?>
+                                    <?php endif; ?>
                                     <div class="col-md-4">
                                         <div class="d-flex mb-2 mb-md-0">
                                             <a href="" class="btn btn-info w-100" data-toggle="modal" data-target="#newPrintDailyActivitiesModal">
@@ -83,10 +81,10 @@
                             <tbody>
                                 <?php $i = 1; ?>
                                 <?php foreach ($daily as $d): ?>
-                                <tr style="text-align: center;">
+                                <tr style="text-align: center;" >
                                     <th scope="row"><?= $i; ?></th>
                                     <td><?= $d['name_user']; ?></td>
-                                    <td><?= $d['date_job']; ?></td>
+                                    <td><?= date("d-m-Y", strtotime($d['date_job'])); ?></td>
                                     <td><?= $d['time']; ?></td>
                                     <td><?= $d['job']; ?></td>
                                     <td>
@@ -110,13 +108,13 @@
                                                     </div>
                                                     <form action="<?= base_url('user/update_modal_DailyActivities'); ?>" method="post"">
                                                         <div class="modal-body">
-                                                            <div class="form-group">
+                                                            <div class="form-group" style="text-align: left;">
                                                                 <input type="hidden" name="id" value="<?= $d['id']; ?>">
-                                                                <label for="time">Jam Pekerjaan</label>
+                                                                <label for="time">Jam Pekerjaan :</label>
                                                                 <input type="text" class="form-control" id="time" name="time" value="<?= $d['time']; ?>">
                                                             </div>
-                                                            <div class="form-group">
-                                                                <label for="job">Pekerjaan</label>
+                                                            <div class="form-group" style="text-align: left;">
+                                                                <label for="job">Pekerjaan :</label>
                                                                 <input type="text" class="form-control" id="job" name="job" value="<?= $d['job']; ?>">
                                                             </div>
                                                             <div class="form-group">
@@ -206,7 +204,7 @@
     </div>
   </div>
 </div>
-<!-- Modal Tambah Pekerjaan -->
+<!-- Modal Print -->
 <div class="modal fade" id="newPrintDailyActivitiesModal" tabindex="-1" aria-labelledby="newPrintDailyActivitiesModalLabel" role="dialog" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -228,8 +226,11 @@
                 <label for="end_date" class="form-label">Sampai Tanggal:</label>
                 <input type="date" id="end_date" name="end_date" class="form-control">
             </div>
-            <div class="form-group">
-                <p>Tekan Saja Tombol Print Jika Ingin Mencetak Seluruh Data Kegiatan</p>
+            <div class="form-check">
+                <input class="form-check" type="checkbox" value="1" id="flexCheckDefault" name="check">
+                <label class="form-check-label" for="flexCheckDefault">
+                    Semua Kegiatan
+                </label>
             </div>
         </div>
         <div class="modal-footer">

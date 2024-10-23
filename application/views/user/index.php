@@ -43,8 +43,8 @@
                                     <li class="list-group-item">Sekolah : <?= $user['school']; ?></li>
                                     <li class="list-group-item">Jurusan : <?= $jur[$user['id_jurusan']]; ?></li>
                                     <li class="list-group-item">Gedung : <?= $user['gedung']; ?></li>
-                                    <li class="list-group-item">Nama Pembimbing (Sekolah) : <?= $user['nama_pembimbing']; ?></li>
-                                    <li class="list-group-item">No. HP Pembimbing (Sekolah) : <?= $user['nohp_pembimbing']; ?></li>
+                                    <li class="list-group-item">Nama Guru (Sekolah) : <?= $users[0]['name_user']; ?></li>
+                                    <li class="list-group-item">No. HP Guru (Sekolah) : <?= $users[0]['no_hp']; ?></li>
                                     <?php
                                     $hari_indonesia = [
                                         'Sunday' => 'Minggu',

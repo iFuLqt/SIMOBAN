@@ -4,7 +4,8 @@
                     <!-- Page Heading -->
                     <h1 class="h5 mb-3 text-gray-800"><?= $title; ?></h1>
                     <?= $this->session->flashdata('message'); ?>
-                    <div class="card container-fluid p-4 mb-2">
+                    <div class="card container-fluid">
+                    <div class="table-responsive mt-3">
                         <div class="row mb-3">
                             <!-- Tambah Pekerjaan dan Refresh dalam satu baris -->
                             <div class="col-12">
@@ -51,9 +52,7 @@
                                 </form>
                             </div>
                         </div>
-                    </div>
-                    <div class="card container-fluid">
-                    <div class="table-responsive mt-3">
+                        <hr>
                         <table class="table table-bordered table-hover table-striped " id="datatable">
                             <thead>
                                 <tr style="text-align: center;">
@@ -70,7 +69,7 @@
                                 <tr style="text-align: center;">
                                     <th scope="row"><?= $i; ?></th>
                                     <td><?= $d['name_user']; ?></td>
-                                    <td><?= $d['date_job']; ?></td>
+                                    <td><?= date("d-m-Y", strtotime($d['date_job'])); ?></td>
                                     <td><?= $d['time']; ?></td>
                                     <td><?= $d['job']; ?></td>
                                 </tr>
@@ -113,8 +112,11 @@
                 <label for="end_date" class="form-label">Sampai Tanggal:</label>
                 <input type="date" id="end_date" name="end_date" class="form-control">
             </div>
-            <div class="form-group">
-                <h4>Jika Ingin Memprint Seluruh Absensi, Isi Saja Nama Siswanya</h4>
+            <div class="form-check">
+                <input class="form-check" type="checkbox" value="1" id="flexCheckChecked" name="checkk">
+                <label class="form-check-label" for="checkk">
+                    Semua Kegiatan?
+                </label>
             </div>
         </div>
         <div class="modal-footer">

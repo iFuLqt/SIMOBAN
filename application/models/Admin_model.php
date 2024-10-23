@@ -75,7 +75,7 @@ Class Admin_model extends CI_Model {
         $this->db->select('user_absensi.information, user.id_jurusan');
         $this->db->from('user_absensi');
         $this->db->join('user', 'user.id_user = user_absensi.user_id');
-        $this->db->where('note', 'Absen Terlambat');
+        $this->db->where('note', 'Terlambat');
         $this->db->where('date_in', $date);
         $query = $this->db->get();
 
@@ -113,6 +113,110 @@ Class Admin_model extends CI_Model {
         $this->db->from('jurusan');
         $query = $this->db->get();
         return $query->result_array();
+    }
+
+    public function get_absensi_by_date($tanggal_awal, $tanggal_akhir) {
+        $this->db->select('user.name_user, user.school, user_absensi.*');
+        $this->db->from('user_absensi');
+        $this->db->join('user', 'user.id_user = user_absensi.user_id');
+        if (!empty($tanggal_awal) && !empty($tanggal_akhir)) {
+            $this->db->where('date_in >=', $tanggal_awal);
+            $this->db->where('date_in <=', $tanggal_akhir);
+        }
+        $this->db->order_by('user_absensi.date_in', 'DESC');
+        
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+    public function get_activities_by_date($tanggal_awal, $tanggal_akhir) {
+        $this->db->select('user.name_user, user.school, daily_activities.*');
+        $this->db->from('daily_activities');
+        $this->db->join('user', 'user.id_user = daily_activities.user_id');
+        if (!empty($tanggal_awal) && !empty($tanggal_akhir)) {
+            $this->db->where('date_job >=', $tanggal_awal);
+            $this->db->where('date_job <=', $tanggal_akhir);
+        }
+        $this->db->order_by('daily_activities.date_job', 'DESC');
+        
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    public function get_all_absensi_by_userid($user_id) {
+        $this->db->select('user.name_user, user.school, user_absensi.*');
+        $this->db->from('user_absensi');
+        $this->db->join('user', 'user.id_user = user_absensi.user_id');
+        $this->db->where('id_user', $user_id);
+        $this->db->order_by('user_absensi.date_in', 'DESC');
+    
+        $query = $this->db->get(); // Sesuaikan nama tabel
+        return $query->result_array();   
+    }
+
+    public function get_absensi_by_date_range($user_id, $tanggal_awal, $tanggal_akhir){
+        $this->db->select('user.name_user, user.school, user_absensi.*');
+        $this->db->from('user_absensi');
+        $this->db->join('user', 'user.id_user = user_absensi.user_id');
+        $this->db->where('id_user', $user_id);
+        $this->db->where('date_in >=', $tanggal_awal);
+        $this->db->where('date_in <=', $tanggal_akhir);
+        $this->db->order_by('user_absensi.date_in', 'DESC');
+    
+        $query = $this->db->get(); // Sesuaikan nama tabel
+        return $query->result_array();
+    }
+
+    public function get_all_activities_by_userid($user_id){
+        $this->db->select('user.name_user, user.school, daily_activities.*');
+        $this->db->from('daily_activities');
+        $this->db->join('user', 'user.id_user = daily_activities.user_id');
+        $this->db->where('id_user', $user_id);
+        $this->db->order_by('daily_activities.date_job', 'DESC');
+    
+        $query = $this->db->get(); // Sesuaikan nama tabel
+        return $query->result_array();   
+    }
+
+    public function get_activities_by_date_range($user_id, $tanggal_awal, $tanggal_akhir){
+        $this->db->select('user.name_user, user.school, daily_activities.*');
+        $this->db->from('daily_activities');
+        $this->db->join('user', 'user.id_user = daily_activities.user_id');
+        $this->db->where('id_user', $user_id);
+        $this->db->where('date_job >=', $tanggal_awal);
+        $this->db->where('date_job <=', $tanggal_akhir);
+        $this->db->order_by('daily_activities.date_job', 'DESC');
+    
+        $query = $this->db->get(); // Sesuaikan nama tabel
+        return $query->result_array();
+    }
+
+    public function get_teacher() {
+        $this->db->select('*');
+        $this->db->from('user');
+        $this->db->where('id_role', 4);
+
+        return $this->db->get()->result_array();
+    }
+
+    public function get_siswa_by_id_guru($id_guru) {
+        $this->db->select('*');
+        $this->db->from('user');
+        $this->db->join('user_teacher', 'user_teacher.user_id = user.id_user');
+        $this->db->where('user_teacher.teacher_id', $id_guru);
+        $this->db->where('user.is_active', 1);
+        $this->db->order_by('user.id_user', 'DESC');
+    
+        return $this->db->get()->result_array();
+    }
+    public function get_guru_by_id_siswa($id_user) {
+        $this->db->select('*');
+        $this->db->from('user');
+        $this->db->join('user_teacher', 'user_teacher.teacher_id = user.id_user');
+        $this->db->where('user_teacher.user_id', $id_user);
+        $this->db->where('user.is_active', 1);
+        $this->db->order_by('user.id_user', 'DESC');
+    
+        return $this->db->get()->result_array();
     }
     
 

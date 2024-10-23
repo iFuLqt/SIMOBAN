@@ -43,7 +43,7 @@ class Absen_model extends CI_Model {
         // Query untuk cek apakah user sudah absen keluar (cek kolom time_out)
         $this->db->where('user_id', $user_id);
         $this->db->where('date_in', $current_date);
-        $this->db->where('time_out >=', '00:00:01'); // Mengecek apakah time_out sudah diisi
+        $this->db->where('time_out !=', 'null'); // Mengecek apakah time_out sudah diisi
         $query = $this->db->get('user_absensi');
 
         if ($query->num_rows() > 0) {
@@ -87,4 +87,13 @@ class Absen_model extends CI_Model {
         return $query->result_array();
     }
     
+    public function get_guru_by_id_siswa($id_siswa){
+        $this->db->select('user.name_user, user.no_hp');
+        $this->db->from('user');
+        $this->db->join('user_teacher', 'user_teacher.teacher_id = user.id_user');
+        $this->db->where('user_teacher.user_id', $id_siswa);
+        $this->db->where('user.is_active', 1);
+    
+        return $this->db->get()->result_array();
+    }
 }

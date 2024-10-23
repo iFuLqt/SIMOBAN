@@ -55,6 +55,44 @@ class Mentor extends CI_Controller {
         
     }
 
+    public function datateacher(){
+        $data['title'] = 'Data Guru';
+        $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array(); 
+        $data['users'] = $this->mentor_model->get_teacher();
+            
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/sidebar', $data);
+        $this->load->view('templates/topbar', $data);
+        $this->load->view('mentor/datateacher', $data);
+        $this->load->view('templates/footer');
+    }
+
+    public function update_modal_datateacher() {
+        $id = $this->input->post('id');
+        $active = $this->input->post('active');
+
+        $data = [
+            'is_active' => $active
+        ];
+        $this->db->where('id_user', $id);
+        $this->db->update('user', $data);
+        $this->session->set_flashdata('message', '<div class="alert alert-success mt-2" role="alert">Data Berhasil DiUbah</div>');
+        redirect('mentor/datateacher');
+    }
+
+    public function delete_modal_datateacher() {
+        $id = $this->input->post('id');
+
+        $this->db->where('id_user', $id);
+        $this->db->delete('user');
+        $this->db->where('user_id', $id);
+        $this->db->delete('daily_activities');
+        $this->db->where('user_id', $id);
+        $this->db->delete('user_absensi');
+        $this->session->set_flashdata('message', '<div class="alert alert-danger mt-2" role="alert">Data Berhasil DiHapus</div>');
+        redirect('mentor/datateacher');
+    }
+
     public function DataStudent(){
         $data['title'] = 'Data Siswa';
         $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array(); 
@@ -115,38 +153,30 @@ class Mentor extends CI_Controller {
     }
 
     public function print_DataAbsensi(){
-        // Ambil data user yang sedang login
         $data['user'] = $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
     
-        // Ambil input dari form
         $user_id = $this->input->post('nama');
         $tanggal_awal = $this->input->post('start_date');
         $tanggal_akhir = $this->input->post('end_date');
+        $cek = $this->input->post('checkk');
     
-        // Cek jika user_id tidak kosong
         if ($user_id != 0) {
-            // Jika tanggal awal dan akhir tidak diisi, ambil semua data absensi berdasarkan user_id
-            if (empty($tanggal_awal) && empty($tanggal_akhir)) {
+            if ($cek == 1 && (empty($tanggal_awal) && empty($tanggal_akhir))) {
                 $data['print'] = $this->mentor_model->get_all_absensi_by_userid($user_id);
             } 
-            // Jika tanggal awal dan akhir diisi, ambil data absensi berdasarkan rentang tanggal
-            else {
+            else if($cek == 1 && (!empty($tanggal_awal) && !empty($tanggal_akhir))) {
+                $data['print'] = $this->mentor_model->get_all_absensi_by_userid($user_id);
+            } else if(!empty($tanggal_awal) && !empty($tanggal_akhir)){
                 $data['print'] = $this->mentor_model->get_absensi_by_date_range($user_id, $tanggal_awal, $tanggal_akhir);
             }
-    
-            // Jika tidak ada data yang ditemukan, redirect kembali ke halaman awal dengan alert
             if (empty($data['print'])) {
                 $this->session->set_flashdata('message', '<div class="alert alert-danger mt-2" role="alert">Data Absensi Kosong.</div>');
-                redirect('mentor/dataabsensi'); // Ganti dengan halaman yang sesuai
+                redirect('mentor/dataabsensi');
             }
-    
         } else {
-            // Jika user_id kosong, berikan pesan kesalahan
             $this->session->set_flashdata('message', '<div class="alert alert-danger mt-2" role="alert">Nama Siswa Tidak Boleh Kosong.</div>');
-            redirect('mentor/dataabsensi'); // Redirect ke halaman yang sesuai
+            redirect('mentor/dataabsensi');
         }
-    
-        // Jika ada data, tampilkan view untuk mencetak data absensi
         $this->load->view('mentor/print_dataabsensi', $data);
     }
     
@@ -177,38 +207,32 @@ class Mentor extends CI_Controller {
     }
 
     public function print_DataActivities(){
-        // Ambil data user yang sedang login
         $data['user'] = $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
     
         // Ambil input dari form
         $user_id = $this->input->post('nama');
         $tanggal_awal = $this->input->post('start_date');
         $tanggal_akhir = $this->input->post('end_date');
+        $cek = $this->input->post('checkk');
     
-        // Cek jika user_id tidak kosong
         if ($user_id != 0) {
-            // Jika tanggal awal dan akhir tidak diisi, ambil semua data absensi berdasarkan user_id
-            if (empty($tanggal_awal) && empty($tanggal_akhir)) {
+            if ($cek == 1 && (empty($tanggal_awal) && empty($tanggal_akhir))) {
                 $data['print'] = $this->mentor_model->get_all_activities_by_userid($user_id);
             } 
-            // Jika tanggal awal dan akhir diisi, ambil data absensi berdasarkan rentang tanggal
-            else {
+            else if($cek == 1 && (!empty($tanggal_awal) && !empty($tanggal_akhir))) {
+                $data['print'] = $this->mentor_model->get_all_activities_by_userid($user_id);
+            } else if(!empty($tanggal_awal) && !empty($tanggal_akhir)){
                 $data['print'] = $this->mentor_model->get_activities_by_date_range($user_id, $tanggal_awal, $tanggal_akhir);
             }
-    
-            // Jika tidak ada data yang ditemukan, redirect kembali ke halaman awal dengan alert
             if (empty($data['print'])) {
                 $this->session->set_flashdata('message', '<div class="alert alert-danger mt-2" role="alert">Data Kegiatan kosong.</div>');
-                redirect('mentor/dataactivities'); // Ganti dengan halaman yang sesuai
+                redirect('mentor/dataactivities');
             }
     
         } else {
-            // Jika user_id kosong, berikan pesan kesalahan
             $this->session->set_flashdata('message', '<div class="alert alert-danger mt-2" role="alert">Nama Siswa tidak boleh kosong.</div>');
-            redirect('mentor/dataactivities'); // Redirect ke halaman yang sesuai
+            redirect('mentor/dataactivities');
         }
-    
-        // Jika ada data, tampilkan view untuk mencetak data absensi
         $this->load->view('mentor/print_dataactivities', $data);
     }
     
@@ -234,7 +258,6 @@ class Mentor extends CI_Controller {
         $this->form_validation->set_rules('email','Email','required|trim|valid_email|is_unique[user.email_user]', ['is_unique' => 'This email has already registered!']);
         $this->form_validation->set_rules('school','School','required|trim');
         $this->form_validation->set_rules('id_jurusan', 'required|trim');
-        $this->form_validation->set_rules('gedu', 'Gedu', 'required|trim');
         $this->form_validation->set_rules('password1','Password','required|trim|min_length[3]|matches[password2]',['matches' => 'Password dont match!', 'min_length' => 'Password too short!']);
         $this->form_validation->set_rules('password2','Password','required|trim|min_length[3]|matches[password1]');
         
@@ -246,8 +269,7 @@ class Mentor extends CI_Controller {
                 'name_user' => htmlspecialchars($this->input->post('name', true)),
                 'email_user' => htmlspecialchars($this->input->post('email', true)),
                 'school' => htmlspecialchars($this->input->post('school', true)),
-                'id_jurusan' => $this->input->post('id_jurusan', true),
-                'gedung' => htmlspecialchars($this->input->post('gedu', true)),
+                'id_jurusan' => $this->input->post('id_jurusan', true) ? $this->input->post('id_jurusan') : NULL, // Null jika tidak diisi
                 'image'=> 'default.jpg',
                 'password' => password_hash($this->input->post('password1'), PASSWORD_DEFAULT),
                 'id_role' => 3,
@@ -264,6 +286,7 @@ class Mentor extends CI_Controller {
         $data['title'] = 'Detail Siswa';
         $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
         $data['users'] = $this->db->get_where('user', ['id_user' => $id_user])->row_array();
+        $data['guru'] = $this->mentor_model->get_guru_by_id_siswa($id_user);
         $jurusan = $data['user']['id_jurusan'];
         if (($data['users']['id_role'] != 3) || ($data['users']['id_jurusan'] != $jurusan)) {
             redirect('mentor/datastudent');
@@ -274,8 +297,84 @@ class Mentor extends CI_Controller {
             $this->load->view('mentor/detail_datastudent', $data);
             $this->load->view('templates/footer');
         }
+    }
+
+    public function detail_datateacher($id_guru){
+        $data['title'] = 'Detail Guru';
+        $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
+        $data['users'] = $this->db->get_where('user', ['id_user' => $id_guru])->row_array();
+        $data['siswa'] = $this->mentor_model->get_siswa_by_id_guru($id_guru);
+        if (($data['users']['id_role'] != 4) || ($data['users']['id_jurusan'] != null)) {
+            redirect('mentor/datateacher');
+        } else {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/sidebar', $data);
+            $this->load->view('templates/topbar', $data);
+            $this->load->view('mentor/detail_datateacher', $data);
+            $this->load->view('templates/footer');
+        }
         
     }
+
+    public function ChangePassword(){
+        $data['title'] = 'Ganti Password';
+        $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
+
+        $this->form_validation->set_rules('current_password', 'Current Password', 'required|trim');
+        $this->form_validation->set_rules('new_password1', 'New Password', 'required|trim|min_length[3]|matches[new_password2]');
+        $this->form_validation->set_rules('new_password2', 'Confirm New Password', 'required|trim|min_length[3]|matches[new_password1]');
+        if($this->form_validation->run() == false) {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/sidebar', $data);
+            $this->load->view('templates/topbar', $data);
+            $this->load->view('mentor/changepassword', $data);
+            $this->load->view('templates/footer', $data);
+        } else {
+            $current_password = $this->input->post('current_password');
+            $new_password = $this->input->post('new_password1');
+            if(!password_verify($current_password, $data['user']['password'])){
+                $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Password Lama Salah!!</div>');
+                redirect('mentor/changepassword');
+            } else {
+                if($current_password == $new_password) {
+                    $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Password Baru Tidak Boleh Sama!!</div>');
+                    redirect('mentor/changepassword');
+                } else {
+                    // password sudah ok
+                    $password_hash = password_hash($new_password, PASSWORD_DEFAULT);
+
+                    $this->db->set('password', $password_hash);
+                    $this->db->where('email_user', $this->session->userdata('email_user'));
+                    $this->db->update('user');
+                    $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Password Diganti!!!</div>');
+                    redirect('mentor/changepassword');
+                }
+            }
+        }
+    }
+
+    public function get_jurusan_siswa(){
+        $role = $this->input->post('role');
+
+        // Cek apakah role bukan siswa
+        if ($role != 3) {
+            echo '<option value=""> --> Pilih Jurusan Magang <-- </option>';
+            return;
+        }
+
+        // Jika role adalah siswa, ambil data jurusan
+        $this->db->select('*');
+        $this->db->from('jurusan');
+        $kelas_list = $this->db->get()->result();
+
+        // Buat output untuk option select jurusan
+        $output = '<option value=""> --> Pilih Jurusan Magang <-- </option>';
+        foreach ($kelas_list as $kelas) {
+            $output .= '<option value="' . $kelas->id . '">' . $kelas->jurusan . '</option>';
+        }
+        echo $output; // Kirim ke JavaScript
+    }
+
 
     
 }

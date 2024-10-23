@@ -117,7 +117,7 @@
                 <?php foreach ($print as $p) : ?>
                 <tr>
                     <td><?= $i; ?></td>
-                    <td><?= $p['date_job']; ?></td>
+                    <td><?= date("d-m-Y", strtotime($p['date_in'])); ?></td>
                     <td><?= $p['time']; ?></td>
                     <td><?= $p['job']; ?></td>
                 </tr>

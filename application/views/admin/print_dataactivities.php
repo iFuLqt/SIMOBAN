@@ -96,9 +96,9 @@
 
     <!-- Informasi Siswa -->
     <div class="student-info">
-        <h2>Nama: <?= $user['name_user']; ?></h2>
-        <h2>Sekolah: <?= $user['school']; ?></h2>
-        <h4 class="mt-5">Catatan Absen Siswa</h4>
+        <h2>Nama: <?= $print[0]['name_user']; ?></h2>
+        <h2>Sekolah: <?= $print[0]['school']; ?></h2>
+        <h4 class="mt-5">Catatan Kegiatan Siswa</h4>
     </div>
 
     <!-- Tabel Data Absen -->
@@ -108,33 +108,18 @@
                 <tr>
                     <th>#</th>
                     <th>Tanggal</th>
-                    <th>Masuk</th>
-                    <th>Keluar</th>
-                    <th>Keterangan</th>
-                    <th>Catatan</th>
+                    <th>Jam</th>
+                    <th>Kegiatan</th>
                 </tr>
             </thead>
             <tbody>
-                <?php 
-                    $absen = [
-                        '1' => 'Hadir',
-                        '2' => 'Sakit',
-                        '3' => 'Izin'
-                    ];
-                ?>
                 <?php $i = 1; ?>
                 <?php foreach ($print as $p) : ?>
                 <tr>
                     <td><?= $i; ?></td>
                     <td><?= date("d-m-Y", strtotime($p['date_in'])); ?></td>
                     <td><?= $p['time']; ?></td>
-                    <td><?= $p['time_out']; ?></td>
-                    <td><?= $absen[$p['information']]; ?></td>
-                    <?php if($p['note'] == "Terlambat") : ?>
-                        <td style="color: red; text-style: bold;"><?= $p['note']; ?></td>
-                    <?php else : ?>
-                        <td><?= $p['note']; ?></td>
-                    <?php endif; ?>
+                    <td><?= $p['job']; ?></td>
                 </tr>
                 <?php $i++; ?>
                 <?php endforeach; ?>

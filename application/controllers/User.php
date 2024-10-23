@@ -16,6 +16,8 @@ class User extends CI_Controller {
     public function index(){
         $data['title'] = 'Profil';
         $data['user'] =  $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
+        $id_siswa = $data['user']['id_user'];
+        $data['users'] = $this->absen_model->get_guru_by_id_siswa($id_siswa);
         $this->load->view('templates/header', $data);
         $this->load->view('templates/sidebar', $data);
         $this->load->view('templates/topbar', $data);
@@ -104,11 +106,11 @@ class User extends CI_Controller {
             $current_password = $this->input->post('current_password');
             $new_password = $this->input->post('new_password1');
             if(!password_verify($current_password, $data['user']['password'])){
-                $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Wrong current password</div>');
+                $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Password Lama Salah!!</div>');
                 redirect('user/changepassword');
             } else {
                 if($current_password == $new_password) {
-                    $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">New Paaword cannot be the same has current</div>');
+                    $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Password Baru Tidak Boleh Sama!!</div>');
                     redirect('user/changepassword');
                 } else {
                     // password sudah ok
@@ -117,7 +119,7 @@ class User extends CI_Controller {
                     $this->db->set('password', $password_hash);
                     $this->db->where('email_user', $this->session->userdata('email_user'));
                     $this->db->update('user');
-                    $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Password change!!!</div>');
+                    $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Password Diganti!!!</div>');
                     redirect('user/changepassword');
                 }
             }
@@ -137,47 +139,55 @@ class User extends CI_Controller {
 
         $sudah_absen= $this->absen_model->cek_absen_hari_ini($user_id);
 
-        if ($sudah_absen) {
-            $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert" style="width: 100%;">
-            Anda sudah melakukan absen pada hari ini, Silahkan menunggu absen pulang
-            </div>');
-            redirect('user/absensi');
-        } else {
-            if ($current_time < $start_time) {
+        if($information != null) {
+            if ($sudah_absen) {
                 $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert" style="width: 100%;">
-                Absen Masuk Hanya Bisa Dilakukan Pada Jam 07:00-08:00 WITA
-                </div>');
-                redirect('user/absensi');
-            } else if($current_time > $end_time) {
-                $data_insert = [
-                    'user_id' => $user_id,
-                    'date_in' => $current_date,
-                    'time' => $current_time,
-                    'information' => $information,
-                    'note' => 'Absen Terlambat'
-                ];
-                $this->absen_model->cek_in($data_insert);
-                $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert" style="width: 100%;">
-                Absen Masuk Berhasil Dicatat!, Dengan Catatan Terlambat
+                Anda sudah melakukan absen pada hari ini, Silahkan menunggu absen pulang
                 </div>');
                 redirect('user/absensi');
             } else {
-                // Simpan data absen masuk
-                $data_insert = [
-                    'user_id' => $user_id,
-                    'date_in' => $current_date,
-                    'time' => $current_time,
-                    'information' => $information,
-                    'note' => '-'
-                ];
-                $this->absen_model->cek_in($data_insert);
-    
-                $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert" style="width: 100%;">
-                Absen Masuk Berhasil Dicatat!
-                </div>');
-                redirect('user/absensi');
-            }
-        } 
+                if ($current_time < $start_time) {
+                    $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert" style="width: 100%;">
+                    Absen Masuk Hanya Bisa Dilakukan Pada Jam 07:00-08:00 WITA
+                    </div>');
+                    redirect('user/absensi');
+                } else if($current_time > $end_time) {
+                    $data_insert = [
+                        'user_id' => $user_id,
+                        'date_in' => $current_date,
+                        'time' => $current_time,
+                        'information' => $information,
+                        'note' => 'Terlambat'
+                    ];
+                    $this->absen_model->cek_in($data_insert);
+                    $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert" style="width: 100%;">
+                    Absen Masuk Berhasil Dicatat!, Dengan Catatan Terlambat
+                    </div>');
+                    redirect('user/absensi');
+                } else {
+                    // Simpan data absen masuk
+                    $data_insert = [
+                        'user_id' => $user_id,
+                        'date_in' => $current_date,
+                        'time' => $current_time,
+                        'information' => $information,
+                        'note' => 'Tepat'
+                    ];
+                    $this->absen_model->cek_in($data_insert);
+        
+                    $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert" style="width: 100%;">
+                    Absen Masuk Berhasil Dicatat!
+                    </div>');
+                    redirect('user/absensi');
+                }
+            } 
+        } else {
+            $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert" style="width: 100%;">
+            Silahkan Pilih Keterangan Absensi!!
+            </div>');
+            redirect('user/absensi');
+        }
+
     }
 
 
@@ -254,14 +264,14 @@ class User extends CI_Controller {
     public function DailyActivities(){
         $data['title'] = 'Kegiatan Harian';
         $data['user'] = $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
+        $user_id = $data['user']['id_user'];
+        $data['absen'] = $this->absen_model->cek_absen_hari_ini($user_id);
 
         $tanggal_awal = $this->input->post('start_date');
         $tanggal_akhir = $this->input->post('end_date');
         if (!empty($tanggal_awal) && !empty($tanggal_akhir)) {
-            $user_id = $data['user']['id_user'];
             $data['daily'] = $this->activities_model->get_data_by_date_range($user_id, $tanggal_awal, $tanggal_akhir);
         } else {
-            $user_id = $data['user']['id_user'];
             $data['daily'] = $this->activities_model->get_daily_activities_by_user_id($user_id);    
         }
         $this->load->view('templates/header', $data);
@@ -324,30 +334,47 @@ class User extends CI_Controller {
 
     public function print_dailyactivities() {
         $data['user'] = $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
+        $user_id = $data['user']['id_user'];
         $tanggal_awal = $this->input->post('start_date');
         $tanggal_akhir = $this->input->post('end_date');
+        $cek = $this->input->post('check');
 
-        if(!empty($tanggal_awal) && !empty($tanggal_akhir)) {
-            $user_id = $data['user']['id_user'];
-            $data['print'] = $this->activities_model->get_data_by_date_range($user_id, $tanggal_awal, $tanggal_akhir);
-        } else {
-            $user_id = $data['user']['id_user'];
+        if(empty($cek)&&empty($tanggal_awal)&&empty($tanggal_akhir)){
+            $this->session->set_flashdata('message', '<div class="alert alert-warning" role="alert" style="width: 100%;">
+            Data Tidak Ditemukan
+            </div>');
+            redirect('user/dailyactivities');
+        } else if(($cek == 1 && (!empty($tanggal_awal) && !empty($tanggal_akhir))) || ($cek == 1 && (empty($tanggal_awal) && empty($tanggal_akhir)))) {
             $data['print'] = $this->activities_model->get_daily_activities_by_user_id($user_id);
+        } else if(!empty($tanggal_awal) && !empty($tanggal_akhir)){
+            $data['print'] = $this->activities_model->get_data_by_date_range($user_id, $tanggal_awal, $tanggal_akhir);
+        } else{
+            $this->session->set_flashdata('message', '<div class="alert alert-warning mt-2" role="alert">Data Tidak Ditemukan.</div>');
+            redirect('user/dailyactivities');
         }
         $this->load->view('user/print_dailyactivities', $data); 
     }
 
     public function print_historyabsensi() {
         $data['user'] = $this->db->get_where('user', ['email_user' => $this->session->userdata('email_user')])->row_array();
+        $user_id = $data['user']['id_user'];
         $tanggal_awal = $this->input->post('start_date');
         $tanggal_akhir = $this->input->post('end_date');
-
-        if(!empty($tanggal_awal) && !empty($tanggal_akhir)) {
-            $user_id = $data['user']['id_user'];
+        $cek = $this->input->post('check');
+        
+        if(empty($cek)&&empty($tanggal_awal)&&empty($tanggal_akhir)){
+            $this->session->set_flashdata('message', '<div class="alert alert-warning" role="alert" style="width: 100%;">
+            Data Tidak Ditemukan
+            </div>');
+            redirect('user/historyabsensi');
+        }
+        else if(($cek == 1 && (!empty($tanggal_awal) && !empty($tanggal_akhir))) || ($cek == 1 && (empty($tanggal_awal) && empty($tanggal_akhir)))) {
+            $data['print'] = $this->absen_model->get_absensi_by_user_id($user_id);
+        } else if(!empty($tanggal_awal) && !empty($tanggal_akhir)) {
             $data['print'] = $this->absen_model->get_data_by_date_range($user_id, $tanggal_awal, $tanggal_akhir);
         } else {
-            $user_id = $data['user']['id_user'];
-            $data['print'] = $this->absen_model->get_absensi_by_user_id($user_id);
+            $this->session->set_flashdata('message', '<div class="alert alert-warning mt-2" role="alert">Data Tidak Ditemukan.</div>');
+            redirect('user/historyabsensi');
         }
         $this->load->view('user/print_historyabsensi', $data);
     }

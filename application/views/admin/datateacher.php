@@ -10,8 +10,8 @@
                             <thead>
                                 <tr style="text-align: center;">
                                     <th>#</th>
-                                    <th>Nama Siswa</th>
-                                    <th>Sekolah</th>
+                                    <th>Nama Guru</th>
+                                    <th>Guru Sekolah</th>
                                     <th>Keaktifan</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -36,7 +36,7 @@
                                     <td>
                                         <div class="d-flex justify-content-center">
                                             <!-- Button detail -->
-                                            <a href="<?= base_url('mentor/detail_datastudent/' . $d['id_user']); ?>" type="button" class="btn btn-warning mr-1" >
+                                            <a href="<?= base_url('admin/detail_datateacher/' . $d['id_user']); ?>" type="button" class="btn btn-warning mr-1" >
                                                 <i class="fas fa-list"></i>
                                             </a>
                                             <!-- Button Update -->
@@ -56,7 +56,7 @@
                                                             </span>
                                                         </button>
                                                     </div>
-                                                    <form action="<?= base_url('mentor/update_modal_datastudent'); ?>" method="post">
+                                                    <form action="<?= base_url('admin/update_modal_datateacher'); ?>" method="post">
                                                         <div class="modal-body">
                                                             <div class="form-group" style="text-align: left;">
                                                                 <label for="active">Keaktifan :</label>
@@ -91,7 +91,7 @@
                                                                   <span aria-hidden="true">&times;</span>
                                                               </button>
                                                           </div>
-                                                          <form action="<?= base_url('mentor/delete_modal_datastudent'); ?>" method="post">
+                                                          <form action="<?= base_url('admin/delete_modal_datateacher'); ?>" method="post">
                                                               <div class="modal-body">
                                                                   <input type="hidden" name="id" value="<?= $d['id_user']; ?>"> <!-- Pastikan ini terisi dengan ID yang benar -->
                                                                   <div class="form-group"> <!-- Mengganti <da> dengan <div> -->

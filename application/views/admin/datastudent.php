@@ -13,6 +13,7 @@
                                     <th>#</th>
                                     <th>Nama Siswa</th>
                                     <th>Sekolah</th>
+                                    <th>Magang (Jurusan)</th>
                                     <th>Keaktifan</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -23,6 +24,10 @@
                                     '1' => 'Aktif',
                                     '0' => 'Nonaktif'
                                 ];
+                                $jj = [];
+                                foreach($jurusan as $jur) {
+                                    $jj[$jur['id']] = $jur['jurusan'];
+                                }
                                 ?>
                                 <?php $i = 1; ?>
                                 <?php foreach ($users as $d): ?>
@@ -30,6 +35,7 @@
                                     <th scope="row"><?= $i; ?></th>
                                     <td><?= $d['name_user']; ?></td>
                                     <td><?= $d['school']; ?></td>
+                                    <td><?= $jj[$d['id_jurusan']]; ?></td>
                                     <?php 
                                     $pengecek = $keaktifan[$d['is_active']];
                                     ?>
@@ -50,7 +56,7 @@
                                                 <div class="modal-dialog" role="document">
                                                     <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="newUpdateDataStudentModalLabel">Edit Keaktifan</h5>
+                                                        <h5 class="modal-title" id="newUpdateDataStudentModalLabel">Edit Siswa</h5>
                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                             <span aria-hidden="true">
                                                                 &times;
@@ -59,25 +65,23 @@
                                                     </div>
                                                     <form action="<?= base_url('admin/update_modal_datastudent'); ?>" method="post"">
                                                         <div class="modal-body">
-                                                            <div class="form-group">
+                                                            <div class="form-group" style="text-align: left;">
                                                                 <input type="hidden" name="id" value="<?= $d['id_user']; ?>">
-                                                                <label for="active">Keaktifan</label>
+                                                                <label for="active">Keaktifan :</label>
                                                                 <select name="active" id="active" class="form-control">
-                                                                    <option value="<?= $d['is_active']; ?>">Pilih Keaktifan</option>
-                                                                    <option value="1">
+                                                                    <option value="1" <?php if($d['is_active'] == 1){ echo 'selected'; } ?>>
                                                                         Aktif
                                                                     </option>
-                                                                    <option value="0">
+                                                                    <option value="0" <?php if($d['is_active'] == 0) {echo 'selected'; } ?>>
                                                                         Nonaktif
                                                                     </option>
                                                                 </select>
                                                             </div>
-                                                            <div class="form-group">
-                                                                <label for="jurusan">Jurusan</label>
+                                                            <div class="form-group" style="text-align: left;">
+                                                                <label for="jurusan">Jurusan :</label>
                                                                 <select name="jurusan" id="jurusan" class="form-control">
-                                                                    <option value="<?= $d['id_jurusan']; ?>">Pilih jurusan</option>
                                                                     <?php foreach ($jurusan as $jur) :?>
-                                                                    <option value="<?= $jur['id']; ?>">
+                                                                    <option value="<?= $jur['id']; ?>" <?php if($d['id_jurusan'] == $jur['id']) { echo 'selected';} ?>>
                                                                         <?= $jur['jurusan']; ?>
                                                                     </option>
                                                                     <?php endforeach; ?>

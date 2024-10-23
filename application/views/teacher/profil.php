@@ -1,10 +1,10 @@
 
 
 
-                                <!-- End of Topbar -->
-                                <div class="scroll">
+                <!-- End of Topbar -->
+                 <div class="scroll">
 
-                                
+                 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
@@ -19,7 +19,7 @@
                     <div class="row no-gutters">
                         <!-- Kolom untuk gambar dengan margin kanan 1 -->
                         <div class="col-md-5 p-2">
-                            <img src="<?= base_url('assets/img/profile/') . $users['image'];?>" class="img-fluid rounded-center" style="width: 100%; height: 500px; object-fit: contain;" >
+                            <img src="<?= base_url('assets/img/profile/') . $user['image'];?>" class="img-fluid rounded-center" style="width: 100%; height: 500px; object-fit: contain;" >
                         </div>
                         <!-- Kolom untuk kartu profil -->
                         <div class="col-md-7">
@@ -37,14 +37,10 @@
                                 ];
                                 ?>
                                 <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">Nama : <?= $users['name_user']; ?></li>
-                                    <li class="list-group-item">Email : <?= $users['email_user']; ?></li>
-                                    <li class="list-group-item">No. HP : <?= $users['no_hp']; ?></li>
-                                    <li class="list-group-item">Sekolah : <?= $users['school']; ?></li>
-                                    <li class="list-group-item">Jurusan : <?= $jur[$users['id_jurusan']]; ?></li>
-                                    <li class="list-group-item">Gedung : <?= $users['gedung']; ?></li>
-                                    <li class="list-group-item">Nama Pembimbing (Sekolah) : <a href="<?= base_url('admin/detail_datateacher/'); ?><?= $guru[0]['id_user']; ?>"><?= $guru[0]['name_user']; ?></a></li>
-                                    <li class="list-group-item">No. HP Pembimbing (Sekolah) : <?= $guru[0]['no_hp']; ?></li>
+                                    <li class="list-group-item">Nama : <?= $user['name_user']; ?></li>
+                                    <li class="list-group-item">Email : <?= $user['email_user']; ?></li>
+                                    <li class="list-group-item">No. HP : <?= $user['no_hp']; ?></li>
+                                    <li class="list-group-item">Guru Sekolah : <?= $user['school']; ?></li>
                                     <?php
                                     $hari_indonesia = [
                                         'Sunday' => 'Minggu',
@@ -73,15 +69,15 @@
                                     ?>
                                     <?php
                                     // Mengambil hari dan bulan dari timestamp
-                                    $hari_inggris = date('l', $users['date_created']);
-                                    $bulan_inggris = date('F', $users['date_created']);
+                                    $hari_inggris = date('l', $user['date_created']);
+                                    $bulan_inggris = date('F', $user['date_created']);
                                     
                                     // Mengubah ke dalam bahasa Indonesia
                                     $hari = $hari_indonesia[$hari_inggris];
                                     $bulan = $bulan_indonesia[$bulan_inggris];
                                     
                                     // Format tanggal dalam bahasa Indonesia
-                                    $tanggal_lengkap = $hari . ', ' . date('d', $users['date_created']) . ' ' . $bulan . ' ' . date('Y', $users['date_created']);
+                                    $tanggal_lengkap = $hari . ', ' . date('d', $user['date_created']) . ' ' . $bulan . ' ' . date('Y', $user['date_created']);
                                     ?>
                                     <li class="list-group-item">Tanggal Dibuat : <?= $tanggal_lengkap; ?></li>
                                 </ul>
@@ -92,6 +88,6 @@
                 </div>
                 <!-- /.container-fluid -->
 
-                </div>
-                <!-- End of Main Content -->
-                </div>
+            </div>
+            <!-- End of Main Content -->
+            </div>
